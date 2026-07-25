@@ -3,7 +3,7 @@ import { VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
 import { getLineNumbersVirtualDom } from '../src/parts/GetLineNumbersVirtualDom/GetLineNumbersVirtualDom.ts'
 
 test('renders sequential line numbers in a gutter', () => {
-  expect(getLineNumbersVirtualDom(2)).toEqual([
+  expect(getLineNumbersVirtualDom(['first line', 'second line'])).toEqual([
     {
       childCount: 2,
       className: 'Gutter',
