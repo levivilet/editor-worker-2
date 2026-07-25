@@ -22,6 +22,7 @@ test('renders dynamic cursor positions for each selection', () => {
     tokenizePath: '',
     uid: 0.5,
     uri: 'file:///test.txt',
+    useCache: true,
     width: 300,
     x: 100,
     y: 50,
