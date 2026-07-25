@@ -6,13 +6,15 @@ import { getCursorVirtualDom } from '../src/parts/GetCursorVirtualDom/GetCursorV
 test('renders the cursor in its own div at the selected position', () => {
   const state: EditorState = {
     columnWidth: 9,
-    content: 'first line\nsecond line',
     diagnostics: [],
     height: 200,
     languageId: 'plaintext',
+    lineCount: 2,
     lineNumbers: true,
     lines: ['first line', 'second line'],
     longestLineWidth: 99,
+    maxLineY: 2,
+    minLineY: 0,
     rowHeight: 20,
     scrollBarWidth: 0,
     selections: new Uint32Array([1, 5, 1, 5]),

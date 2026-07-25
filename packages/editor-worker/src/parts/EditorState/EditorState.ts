@@ -2,13 +2,15 @@ import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
 
 export interface EditorState {
   readonly columnWidth: number
-  readonly content: string
   readonly diagnostics: readonly Diagnostic[]
   readonly height: number
   readonly languageId: string
+  readonly lineCount: number
   readonly lineNumbers: boolean
   readonly lines: readonly string[]
   readonly longestLineWidth: number
+  readonly maxLineY: number
+  readonly minLineY: number
   readonly rowHeight: number
   readonly scrollBarWidth: number
   readonly selections: Uint32Array

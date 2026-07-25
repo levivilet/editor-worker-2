@@ -7,13 +7,15 @@ const renderedStates = new Map<number, EditorState>()
 export const create = (uid: number, uri = '', languageId = 'plaintext', tokenizePath = '', x = 0, y = 0, width = 0, height = 0): EditorState => {
   const state: EditorState = {
     columnWidth: EditorMetrics.ColumnWidth,
-    content: '',
     diagnostics: [],
     height,
     languageId,
+    lineCount: 0,
     lineNumbers: true,
     lines: [],
     longestLineWidth: 0,
+    maxLineY: 0,
+    minLineY: 0,
     rowHeight: EditorMetrics.RowHeight,
     scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),

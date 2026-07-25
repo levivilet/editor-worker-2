@@ -16,13 +16,13 @@ const editorNode: VirtualDomNode = {
 }
 
 export const getEditorVirtualDom = (state: EditorState): readonly VirtualDomNode[] => {
-  const { content, diagnostics, lineNumbers, scrollBarWidth, tokenizedLines } = state
+  const { diagnostics, lineNumbers, lines, scrollBarWidth, tokenizedLines } = state
   const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(diagnostics)
   const lineNumbersDom = lineNumbers ? GetLineNumbersVirtualDom.getLineNumbersVirtualDom(tokenizedLines.length) : []
   const scrollBarDom = GetScrollBarVirtualDom.getScrollBarVirtualDom(scrollBarWidth)
   return [
     editorNode,
-    ...GetEditorInputVirtualDom.getEditorInputVirtualDom(content),
+    ...GetEditorInputVirtualDom.getEditorInputVirtualDom(lines.join('\n')),
     {
       childCount: 2 + (lineNumbers ? 1 : 0) + (diagnosticsDom.length > 0 ? 1 : 0) + (scrollBarDom.length > 0 ? 1 : 0),
       className: ClassNames.EditorContent,
