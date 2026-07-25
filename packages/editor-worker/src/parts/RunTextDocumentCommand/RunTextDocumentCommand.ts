@@ -3,10 +3,10 @@ import * as ApplyTextDocumentSnapshot from '../ApplyTextDocumentSnapshot/ApplyTe
 import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import * as TextDocumentWorker from '../TextDocumentWorker/TextDocumentWorker.ts'
 
-export const handleInput = async (uid: number, content: string): Promise<void> => {
+export const runTextDocumentCommand = async (uid: number, method: string, ...params: readonly unknown[]): Promise<void> => {
   await EditorCommandQueue.enqueue(uid, async () => {
     const rpc = await TextDocumentWorker.get()
-    const snapshot = (await rpc.invoke('TextDocument.setContent', uid, content)) as TextDocumentSnapshot
+    const snapshot = (await rpc.invoke(method, uid, ...params)) as TextDocumentSnapshot
     await ApplyTextDocumentSnapshot.applyTextDocumentSnapshot(uid, snapshot)
   })
 }

@@ -283,8 +283,11 @@ test('renders later content changes incrementally', async () => {
   const diffResult = diff2(44)
   const commands = render2(44, diffResult)
 
-  expect(diffResult).toEqual([DiffType.RenderIncremental])
-  expect(commands).toEqual([['Viewlet.setPatches', 44, expect.any(Array)]])
+  expect(diffResult).toEqual([DiffType.RenderIncremental, DiffType.RenderCss])
+  expect(commands).toEqual([
+    ['Viewlet.setPatches', 44, expect.any(Array)],
+    ['Viewlet.setCss', 44, expect.any(String)],
+  ])
   expect(commands[0][2]).not.toEqual([])
   expect(diff2(44)).toEqual([])
   expect(dispose(44)).toEqual([])

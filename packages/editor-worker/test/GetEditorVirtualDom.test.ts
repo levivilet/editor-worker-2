@@ -6,6 +6,8 @@ import { getEditorVirtualDom } from '../src/parts/GetEditorVirtualDom/GetEditorV
 
 const createState = (lineNumbers: boolean): EditorState => {
   return {
+    canRedo: false,
+    canUndo: false,
     columnWidth: 9,
     diagnostics: [],
     findWidgetVisible: false,
@@ -17,8 +19,11 @@ const createState = (lineNumbers: boolean): EditorState => {
     longestLineWidth: 90,
     maxLineY: 2,
     minLineY: 0,
+    modified: false,
     rowHeight: 20,
     scrollBarWidth: 0,
+    scrollLeft: 0,
+    scrollTop: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [
       ['first', 'Token Text'],
@@ -28,6 +33,7 @@ const createState = (lineNumbers: boolean): EditorState => {
     uid: 1,
     uri: 'file:///test.txt',
     useCache: true,
+    version: 0,
     width: 100,
     x: 0,
     y: 0,

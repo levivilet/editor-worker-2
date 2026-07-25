@@ -1,12 +1,8 @@
-import * as EditorStates from '../EditorStates/EditorStates.ts'
+import * as RunTextDocumentCommand from '../RunTextDocumentCommand/RunTextDocumentCommand.ts'
 
-export const setSelections2 = (uid: number, selections: Uint32Array): void => {
+export const setSelections2 = async (uid: number, selections: Uint32Array): Promise<void> => {
   if (selections.length === 0 || selections.length % 4 !== 0) {
     throw new Error('Editor selections must contain one or more groups of four values')
   }
-  const state = EditorStates.get(uid)
-  EditorStates.set({
-    ...state,
-    selections: new Uint32Array(selections),
-  })
+  await RunTextDocumentCommand.runTextDocumentCommand(uid, 'TextDocument.setSelections', [...selections])
 }
