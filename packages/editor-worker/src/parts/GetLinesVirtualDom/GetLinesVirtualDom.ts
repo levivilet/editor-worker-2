@@ -1,33 +1,41 @@
 import { type VirtualDomNode, VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 
+const getTokenVirtualDom = (tokenText: string, index: number, tokenizedLine: readonly string[]): readonly VirtualDomNode[] => {
+  if (index % 2 !== 0) {
+    return []
+  }
+  return [
+    {
+      childCount: 1,
+      className: tokenizedLine[index + 1],
+      type: VirtualDomElements.Span,
+    },
+    {
+      text: tokenText,
+      type: VirtualDomElements.Text,
+    },
+  ]
+}
+
+const getLineVirtualDom = (tokenizedLine: readonly string[]): readonly VirtualDomNode[] => {
+  return [
+    {
+      childCount: tokenizedLine.length / 2,
+      className: ClassNames.EditorLine,
+      type: VirtualDomElements.Div,
+    },
+    ...tokenizedLine.flatMap(getTokenVirtualDom),
+  ]
+}
+
 export const getLinesVirtualDom = (tokenizedLines: readonly (readonly string[])[]): readonly VirtualDomNode[] => {
-  const dom: VirtualDomNode[] = [
+  return [
     {
       childCount: tokenizedLines.length,
       className: ClassNames.EditorLines,
       type: VirtualDomElements.Div,
     },
+    ...tokenizedLines.flatMap(getLineVirtualDom),
   ]
-  for (const tokenizedLine of tokenizedLines) {
-    dom.push({
-      childCount: tokenizedLine.length / 2,
-      className: ClassNames.EditorLine,
-      type: VirtualDomElements.Div,
-    })
-    for (let i = 0; i < tokenizedLine.length; i += 2) {
-      dom.push(
-        {
-          childCount: 1,
-          className: tokenizedLine[i + 1],
-          type: VirtualDomElements.Span,
-        },
-        {
-          text: tokenizedLine[i],
-          type: VirtualDomElements.Text,
-        },
-      )
-    }
-  }
-  return dom
 }
