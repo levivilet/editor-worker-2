@@ -64,7 +64,7 @@ test('contains only the minimal editor integration commands', () => {
   expect(commandMap['Editor.renderEventListeners']()).toEqual([
     {
       name: 3,
-      params: ['handleClick', 'event.clientX', 'event.clientY'],
+      params: ['handleClick', 'event.clientX', 'event.clientY', 'event.detail'],
     },
     {
       name: 1,

@@ -23,3 +23,25 @@ test('updates the cursor position for an editor click', () => {
   expect(render2(1, diffResult)).toEqual([['Viewlet.setPatches', 1, expect.any(Array)]])
   dispose(1)
 })
+
+test('selects a word for an editor double click', () => {
+  const state = create(2, 'file:///test.txt', 100, 50, 300, 200)
+  EditorStates.set({
+    ...state,
+    lines: ['first line', 'second line'],
+  })
+
+  handleClick(2, 154, 75, 2)
+
+  expect(EditorStates.get(2).selections).toEqual(new Uint32Array([1, 0, 1, 6]))
+  dispose(2)
+})
+
+test('keeps the selection collapsed when double clicking an empty editor', () => {
+  create(3)
+
+  handleClick(3, 0, 0, 2)
+
+  expect(EditorStates.get(3).selections).toEqual(new Uint32Array([0, 0, 0, 0]))
+  dispose(3)
+})
