@@ -30,11 +30,11 @@ test('renders Hello World', () => {
     ],
   ])
 
-  dispose(42)
+  expect(dispose(42)).toEqual([])
 })
 
 test('rejects unknown diffs', () => {
   create(43)
   expect(() => render2(43, [999])).toThrow(new Error('Unknown editor diff: 999'))
-  dispose(43)
+  expect(dispose(43)).toEqual([])
 })
