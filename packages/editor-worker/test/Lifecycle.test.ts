@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
-import { FileSystemWorker } from '@lvce-editor/rpc-registry'
-import { VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
+import { FileSystemWorker, SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
+import { mergeClassNames, VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
 import * as ClassNames from '../src/parts/ClassNames/ClassNames.ts'
 import { create } from '../src/parts/Create/Create.ts'
 import { diff2 } from '../src/parts/Diff2/Diff2.ts'
@@ -15,6 +15,13 @@ test('loads and renders file lines', async () => {
   using _fileSystemRpc = FileSystemWorker.registerMockRpc({
     'FileSystem.readFile': async (): Promise<string> => 'first line\nsecond line',
   })
+  SyntaxHighlightingWorker.set({
+    dispose: async (): Promise<void> => {},
+    invoke: async (): Promise<unknown> => [
+      ['first', 'Token Keyword', ' line', 'Token Text'],
+      ['second line', 'Token String'],
+    ],
+  } as any)
   create(42, 'file:///test.txt')
   await loadContent(42)
 
@@ -33,18 +40,37 @@ test('loads and renders file lines', async () => {
           type: VirtualDomElements.Div,
         },
         {
-          childCount: 1,
+          childCount: 2,
           className: 'EditorLine',
           type: VirtualDomElements.Div,
         },
         {
-          text: 'first line',
+          childCount: 1,
+          className: mergeClassNames('Token', 'Keyword'),
+          type: VirtualDomElements.Span,
+        },
+        {
+          text: 'first',
+          type: VirtualDomElements.Text,
+        },
+        {
+          childCount: 1,
+          className: mergeClassNames('Token', 'Text'),
+          type: VirtualDomElements.Span,
+        },
+        {
+          text: ' line',
           type: VirtualDomElements.Text,
         },
         {
           childCount: 1,
           className: 'EditorLine',
           type: VirtualDomElements.Div,
+        },
+        {
+          childCount: 1,
+          className: mergeClassNames('Token', 'String'),
+          type: VirtualDomElements.Span,
         },
         {
           text: 'second line',
@@ -55,6 +81,7 @@ test('loads and renders file lines', async () => {
   ])
 
   expect(dispose(42)).toEqual([])
+  await SyntaxHighlightingWorker.dispose()
 })
 
 test('renders non-empty diagnostics inside a div', () => {
@@ -132,6 +159,12 @@ test('renders later content changes incrementally', async () => {
   using _fileSystemRpc = FileSystemWorker.registerMockRpc({
     'FileSystem.readFile': async (): Promise<string> => content,
   })
+  SyntaxHighlightingWorker.set({
+    dispose: async (): Promise<void> => {},
+    invoke: async (_method: string, codeBlock: string): Promise<unknown> => {
+      return codeBlock.split('\n').map((line) => [line, 'Token Text'])
+    },
+  } as any)
   create(44, 'file:///test.txt')
   await loadContent(44)
   render2(44, diff2(44))
@@ -144,6 +177,8 @@ test('renders later content changes incrementally', async () => {
 
   expect(diffResult).toEqual([DiffType.RenderIncremental])
   expect(commands).toEqual([['Viewlet.setPatches', 44, expect.any(Array)]])
+  expect(commands[0][2]).not.toEqual([])
   expect(diff2(44)).toEqual([])
   expect(dispose(44)).toEqual([])
+  await SyntaxHighlightingWorker.dispose()
 })

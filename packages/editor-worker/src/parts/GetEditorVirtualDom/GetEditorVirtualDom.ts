@@ -4,6 +4,6 @@ import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagno
 import * as GetLinesVirtualDom from '../GetLinesVirtualDom/GetLinesVirtualDom.ts'
 
 export const getEditorVirtualDom = (state: EditorState): readonly VirtualDomNode[] => {
-  const { diagnostics, lines } = state
-  return [...GetLinesVirtualDom.getLinesVirtualDom(lines), ...GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(diagnostics)]
+  const { diagnostics, tokenizedLines } = state
+  return [...GetLinesVirtualDom.getLinesVirtualDom(tokenizedLines), ...GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(diagnostics)]
 }
