@@ -3,6 +3,7 @@ import { renderIncremental } from '../src/parts/RenderIncremental/RenderIncremen
 
 test('returns patches for changed lines', () => {
   const oldState = {
+    content: 'first line',
     diagnostics: [],
     languageId: 'plaintext',
     lines: ['first line'],
@@ -13,6 +14,7 @@ test('returns patches for changed lines', () => {
   }
   const newState = {
     ...oldState,
+    content: 'updated first line\nsecond line',
     lines: ['updated first line', 'second line'],
     tokenizedLines: [
       ['updated first line', 'Token Text'],

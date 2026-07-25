@@ -6,6 +6,7 @@ import { create } from '../src/parts/Create/Create.ts'
 import { diff2 } from '../src/parts/Diff2/Diff2.ts'
 import * as DiffType from '../src/parts/DiffType/DiffType.ts'
 import { dispose } from '../src/parts/Dispose/Dispose.ts'
+import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { loadContent } from '../src/parts/LoadContent/LoadContent.ts'
 import * as MergeClassNames from '../src/parts/MergeClassNames/MergeClassNames.ts'
@@ -34,6 +35,22 @@ test('loads and renders file lines', async () => {
       'Viewlet.setDom2',
       42,
       [
+        {
+          childCount: 2,
+          className: 'Editor',
+          type: VirtualDomElements.Div,
+        },
+        {
+          childCount: 1,
+          className: 'EditorInput',
+          type: VirtualDomElements.Div,
+        },
+        {
+          childCount: 0,
+          onInput: DomEventListenerFunctions.HandleInput,
+          type: VirtualDomElements.TextArea,
+          value: 'first line\nsecond line',
+        },
         {
           childCount: 2,
           className: 'EditorLines',
@@ -106,6 +123,22 @@ test('renders non-empty diagnostics inside a div', () => {
       'Viewlet.setDom2',
       44,
       [
+        {
+          childCount: 3,
+          className: 'Editor',
+          type: VirtualDomElements.Div,
+        },
+        {
+          childCount: 1,
+          className: 'EditorInput',
+          type: VirtualDomElements.Div,
+        },
+        {
+          childCount: 0,
+          onInput: DomEventListenerFunctions.HandleInput,
+          type: VirtualDomElements.TextArea,
+          value: '',
+        },
         {
           childCount: 0,
           className: 'EditorLines',

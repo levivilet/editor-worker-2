@@ -1,0 +1,37 @@
+import { expect, test } from '@jest/globals'
+import { SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
+import { create } from '../src/parts/Create/Create.ts'
+import { dispose } from '../src/parts/Dispose/Dispose.ts'
+import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
+import { handleInput } from '../src/parts/HandleInput/HandleInput.ts'
+
+test('updates the editor content and lines', async () => {
+  SyntaxHighlightingWorker.set({
+    dispose: async (): Promise<void> => {},
+    invoke: async (): Promise<unknown> => [
+      ['first', 'Token Keyword'],
+      ['second', 'Token String'],
+      ['third', 'Token Comment'],
+    ],
+  } as any)
+  create(1, 'file:///test.txt')
+
+  await handleInput(1, 'first\r\nsecond\nthird')
+
+  expect(EditorStates.get(1)).toEqual({
+    content: 'first\r\nsecond\nthird',
+    diagnostics: [],
+    languageId: 'plaintext',
+    lines: ['first', 'second', 'third'],
+    tokenizedLines: [
+      ['first', 'Token Keyword'],
+      ['second', 'Token String'],
+      ['third', 'Token Comment'],
+    ],
+    tokenizePath: '',
+    uid: 1,
+    uri: 'file:///test.txt',
+  })
+  dispose(1)
+  await SyntaxHighlightingWorker.dispose()
+})

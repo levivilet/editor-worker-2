@@ -1,6 +1,7 @@
 import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
 
 export interface EditorState {
+  readonly content: string
   readonly diagnostics: readonly Diagnostic[]
   readonly languageId: string
   readonly lines: readonly string[]

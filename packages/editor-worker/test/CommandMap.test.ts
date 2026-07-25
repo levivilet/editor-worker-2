@@ -10,6 +10,7 @@ test('contains only the minimal editor integration commands', () => {
     'Editor.getCommandIds',
     'Editor.getKeyBindings',
     'Editor.getQuickPickMenuEntries',
+    'Editor.handleInput',
     'Editor.loadContent',
     'Editor.render2',
     'Editor.renderEventListeners',
@@ -19,11 +20,17 @@ test('contains only the minimal editor integration commands', () => {
     'Font.ensure',
     'Initialize.initialize',
   ])
-  expect(commandMap['Editor.getCommandIds']()).toEqual(['updateDiagnostics'])
+  expect(commandMap['Editor.getCommandIds']()).toEqual(['handleInput', 'updateDiagnostics'])
   expect(commandMap['Editor.getKeyBindings']()).toEqual([])
   expect(commandMap['Editor.getQuickPickMenuEntries']()).toEqual([])
+  expect(commandMap['Editor.handleInput']).toEqual(expect.any(Function))
   expect(commandMap['Editor.loadContent']).toEqual(expect.any(Function))
-  expect(commandMap['Editor.renderEventListeners']()).toEqual([])
+  expect(commandMap['Editor.renderEventListeners']()).toEqual([
+    {
+      name: 1,
+      params: ['handleInput', 'event.target.value'],
+    },
+  ])
   expect(commandMap['Editor.setDiagnostics']).toEqual(expect.any(Function))
   expect(commandMap['Editor.setSelections2']()).toBeUndefined()
   expect(commandMap['Editor.updateDiagnostics']()).toBeUndefined()

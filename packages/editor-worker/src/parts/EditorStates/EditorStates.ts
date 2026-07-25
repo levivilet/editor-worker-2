@@ -5,6 +5,7 @@ const renderedStates = new Map<number, EditorState>()
 
 export const create = (uid: number, uri = '', languageId = 'plaintext', tokenizePath = ''): EditorState => {
   const state: EditorState = {
+    content: '',
     diagnostics: [],
     languageId,
     lines: [],
