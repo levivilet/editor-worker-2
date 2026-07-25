@@ -1,4 +1,5 @@
 import { expect, test } from '@jest/globals'
+import { VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
 import { create } from '../src/parts/Create/Create.ts'
 import { diff2 } from '../src/parts/Diff2/Diff2.ts'
 import * as DiffType from '../src/parts/DiffType/DiffType.ts'
@@ -19,11 +20,11 @@ test('renders Hello World', () => {
       [
         {
           childCount: 1,
-          type: 5,
+          type: VirtualDomElements.H1,
         },
         {
           text: 'Hello World',
-          type: 12,
+          type: VirtualDomElements.Text,
         },
       ],
     ],

@@ -6,6 +6,7 @@ import { rollup, type RollupOptions } from 'rollup'
 import { root } from './root.ts'
 
 const createOptions = (input: string, output: string): RollupOptions => ({
+  external: ['electron', 'node:buffer', 'node:worker_threads', 'ws'],
   input: join(root, input),
   output: {
     file: join(root, output),

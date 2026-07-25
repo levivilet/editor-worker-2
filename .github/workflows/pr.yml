@@ -36,7 +36,7 @@ jobs:
       - run: npm run lint
       - name: Upload build artifacts
         if: matrix.os == 'ubuntu-24.04'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: worker-bundles
           path: ./.tmp/dist

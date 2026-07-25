@@ -5,6 +5,7 @@ import { root } from './root.ts'
 const createOptions = (entryPoint: string, outfile: string): BuildOptions => ({
   bundle: true,
   entryPoints: [join(root, entryPoint)],
+  external: ['electron', 'node:buffer', 'node:worker_threads', 'ws'],
   format: 'esm',
   outfile: join(root, outfile),
 })
