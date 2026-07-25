@@ -22,6 +22,7 @@ test('creates, isolates, and disposes editor states', () => {
     tokenizePath: '',
     uid: 1,
     uri: 'file:///one.txt',
+    useCache: true,
     width: 100,
     x: 10,
     y: 20,

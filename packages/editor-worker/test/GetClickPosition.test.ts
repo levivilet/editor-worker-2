@@ -22,6 +22,7 @@ const createState = (): EditorState => ({
   tokenizePath: '',
   uid: 1,
   uri: 'file:///test.txt',
+  useCache: true,
   width: 300,
   x: 100,
   y: 50,

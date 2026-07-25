@@ -21,6 +21,7 @@ test('returns patches for changed lines', () => {
     tokenizePath: '',
     uid: 42,
     uri: 'file:///test.txt',
+    useCache: true,
     width: 100,
     x: 0,
     y: 0,

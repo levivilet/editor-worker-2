@@ -44,6 +44,7 @@ test('updates the text document and visible editor lines', async () => {
     tokenizePath: '',
     uid: 1,
     uri: 'file:///test.txt',
+    useCache: true,
     width: 100,
     x: 0,
     y: 0,

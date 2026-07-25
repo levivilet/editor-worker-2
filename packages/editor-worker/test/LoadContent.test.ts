@@ -10,6 +10,7 @@ import { registerMockTextDocumentWorker } from './MockTextDocumentWorker.ts'
 test('loads file content into editor lines', async () => {
   const textDocumentRpc = registerMockTextDocumentWorker()
   using fileSystemRpc = FileSystemWorker.registerMockRpc({
+    'FileSystem.getFileHash': async (): Promise<string> => 'hash-1',
     'FileSystem.readFile': async (uri: string): Promise<string> => {
       expect(uri).toBe('file:///test.ts')
       return 'first\r\nsecond\nthird'
@@ -55,11 +56,15 @@ test('loads file content into editor lines', async () => {
     tokenizePath: '/tokenize-typescript.js',
     uid: 1,
     uri: 'file:///test.ts',
+    useCache: true,
     width: 100,
     x: 0,
     y: 0,
   })
-  expect(fileSystemRpc.invocations).toEqual([['FileSystem.readFile', 'file:///test.ts']])
+  expect(fileSystemRpc.invocations).toEqual([
+    ['FileSystem.getFileHash', 'file:///test.ts'],
+    ['FileSystem.readFile', 'file:///test.ts'],
+  ])
   expect(textDocumentRpc.invocations).toEqual([
     ['TextDocument.setContent', 1, 'first\r\nsecond\nthird'],
     ['TextDocument.getLines', 1, 0, 3],
