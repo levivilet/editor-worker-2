@@ -3,10 +3,13 @@ import type { EditorState } from '../EditorState/EditorState.ts'
 const states = new Map<number, EditorState>()
 const renderedStates = new Map<number, EditorState>()
 
-export const create = (uid: number, uri = ''): EditorState => {
+export const create = (uid: number, uri = '', languageId = 'plaintext', tokenizePath = ''): EditorState => {
   const state: EditorState = {
     diagnostics: [],
+    languageId,
     lines: [],
+    tokenizedLines: [],
+    tokenizePath,
     uid,
     uri,
   }

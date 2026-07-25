@@ -1,6 +1,14 @@
 import { expect, test } from '@jest/globals'
 import { mockWorkerGlobalRpc } from '@lvce-editor/rpc'
-import { ClipBoardWorker, ExtensionManagementWorker, FileSystemWorker, get, RendererWorker, RpcId } from '@lvce-editor/rpc-registry'
+import {
+  ClipBoardWorker,
+  ExtensionManagementWorker,
+  FileSystemWorker,
+  get,
+  RendererWorker,
+  RpcId,
+  SyntaxHighlightingWorker,
+} from '@lvce-editor/rpc-registry'
 import * as Listen from '../src/parts/Listen/Listen.ts'
 
 test('starts the editor worker rpc', async () => {
@@ -11,11 +19,12 @@ test('starts the editor worker rpc', async () => {
   dispose()
 })
 
-test('initializes lazy connections to the file system, extension management, and clipboard workers', async () => {
+test('initializes lazy worker connections', async () => {
   using mockRendererRpc = RendererWorker.registerMockRpc({
     'SendMessagePortToExtensionHostWorker.sendMessagePortToClipBoardWorker'() {},
     'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionManagementWorker'() {},
     'SendMessagePortToExtensionHostWorker.sendMessagePortToFileSystemWorker'() {},
+    'SendMessagePortToSyntaxHighlightingWorker.sendMessagePortToSyntaxHighlightingWorker'() {},
   })
 
   await Listen.initializeWorkerConnections()
@@ -24,9 +33,11 @@ test('initializes lazy connections to the file system, extension management, and
   const clipBoardRpc = get(RpcId.ClipBoardWorker)
   const extensionManagementRpc = get(RpcId.ExtensionManagementWorker)
   const fileSystemRpc = get(RpcId.FileSystemWorker)
+  const syntaxHighlightingRpc = get(RpcId.MarkdownWorker)
   fileSystemRpc.send('test')
   extensionManagementRpc.send('test')
   clipBoardRpc.send('test')
+  syntaxHighlightingRpc.send('test')
   await new Promise((resolve) => setTimeout(resolve, 0))
 
   expect(mockRendererRpc.invocations).toEqual([
@@ -38,7 +49,12 @@ test('initializes lazy connections to the file system, extension management, and
       RpcId.EditorWorker,
     ],
     ['SendMessagePortToExtensionHostWorker.sendMessagePortToClipBoardWorker', expect.anything(), 'ClipBoard.handleMessagePort', RpcId.EditorWorker],
+    [
+      'SendMessagePortToSyntaxHighlightingWorker.sendMessagePortToSyntaxHighlightingWorker',
+      expect.anything(),
+      'HandleMessagePort.handleMessagePort2',
+    ],
   ])
 
-  await Promise.all([ClipBoardWorker.dispose(), ExtensionManagementWorker.dispose(), FileSystemWorker.dispose()])
+  await Promise.all([ClipBoardWorker.dispose(), ExtensionManagementWorker.dispose(), FileSystemWorker.dispose(), SyntaxHighlightingWorker.dispose()])
 })

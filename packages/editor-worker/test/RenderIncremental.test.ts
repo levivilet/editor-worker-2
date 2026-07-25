@@ -4,13 +4,20 @@ import { renderIncremental } from '../src/parts/RenderIncremental/RenderIncremen
 test('returns patches for changed lines', () => {
   const oldState = {
     diagnostics: [],
+    languageId: 'plaintext',
     lines: ['first line'],
+    tokenizedLines: [['first line', 'Token Text']],
+    tokenizePath: '',
     uid: 42,
     uri: 'file:///test.txt',
   }
   const newState = {
     ...oldState,
     lines: ['updated first line', 'second line'],
+    tokenizedLines: [
+      ['updated first line', 'Token Text'],
+      ['second line', 'Token Text'],
+    ],
   }
 
   const result = renderIncremental(oldState, newState)
