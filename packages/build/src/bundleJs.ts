@@ -33,10 +33,7 @@ const createOptions = (input: string, output: string): RollupOptions => ({
 
 const options = [
   createOptions('packages/editor-worker/src/editorWorkerMain.ts', '.tmp/dist/editor-worker/dist/editorWorkerMain.js'),
-  createOptions(
-    'packages/text-document-worker/src/textDocumentWorkerMain.ts',
-    '.tmp/dist/text-document-worker/dist/textDocumentWorkerMain.js',
-  ),
+  createOptions('packages/text-document-worker/src/textDocumentWorkerMain.ts', '.tmp/dist/text-document-worker/dist/textDocumentWorkerMain.js'),
 ]
 
 export const bundleJs = async (): Promise<void> => {

@@ -12,10 +12,7 @@ const createOptions = (entryPoint: string, outfile: string): BuildOptions => ({
 
 const options = [
   createOptions('packages/editor-worker/src/editorWorkerMain.ts', '.tmp/dist/editor-worker/dist/editorWorkerMain.js'),
-  createOptions(
-    'packages/text-document-worker/src/textDocumentWorkerMain.ts',
-    '.tmp/dist/text-document-worker/dist/textDocumentWorkerMain.js',
-  ),
+  createOptions('packages/text-document-worker/src/textDocumentWorkerMain.ts', '.tmp/dist/text-document-worker/dist/textDocumentWorkerMain.js'),
 ]
 
 for (const option of options) {
