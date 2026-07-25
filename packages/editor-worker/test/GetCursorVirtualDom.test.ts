@@ -23,6 +23,7 @@ test('renders the cursor in its own div at the selected position', () => {
     tokenizePath: '',
     uid: 1,
     uri: 'file:///test.txt',
+    useCache: true,
     width: 300,
     x: 100,
     y: 50,

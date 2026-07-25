@@ -19,6 +19,7 @@ export interface EditorState {
   readonly tokenizePath: string
   readonly uid: number
   readonly uri: string
+  readonly useCache: boolean
   readonly width: number
   readonly x: number
   readonly y: number
