@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals'
-import { AriaRoles, VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
+import { AriaRoles, mergeClassNames, VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
 import type { EditorState } from '../src/parts/EditorState/EditorState.ts'
 import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import { getEditorVirtualDom } from '../src/parts/GetEditorVirtualDom/GetEditorVirtualDom.ts'
@@ -67,10 +67,9 @@ test('renders line numbers, lines, and cursor inside the clickable editor conten
   })
   expect(dom.at(-1)).toEqual({
     childCount: 0,
-    className: 'EditorCursor',
+    className: mergeClassNames('EditorCursor', 'EditorCursor-1-0'),
     'data-columnIndex': '0',
     'data-rowIndex': '0',
-    translate: '0px 0px',
     type: VirtualDomElements.Div,
   })
 })
@@ -96,4 +95,31 @@ test('does not render a gutter when line numbers are disabled', () => {
     type: VirtualDomElements.Div,
   })
   expect(dom.some((node) => node.className === 'Gutter')).toBe(false)
+})
+
+test('renders every selection as a separate cursor child', () => {
+  const state = {
+    ...createState(false),
+    selections: new Uint32Array([0, 1, 0, 1, 1, 2, 1, 2]),
+  }
+
+  const dom = getEditorVirtualDom(state)
+
+  expect(dom[3].childCount).toBe(3)
+  expect(dom.slice(-2)).toEqual([
+    {
+      childCount: 0,
+      className: mergeClassNames('EditorCursor', 'EditorCursor-1-0'),
+      'data-columnIndex': '1',
+      'data-rowIndex': '0',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 0,
+      className: mergeClassNames('EditorCursor', 'EditorCursor-1-1'),
+      'data-columnIndex': '2',
+      'data-rowIndex': '1',
+      type: VirtualDomElements.Div,
+    },
+  ])
 })

@@ -5,10 +5,10 @@ export const diff2 = (uid: number): readonly number[] => {
   const newState = EditorStates.get(uid)
   const oldState = EditorStates.getRendered(uid)
   if (!oldState) {
-    return [DiffType.RenderItems]
+    return [DiffType.RenderItems, DiffType.RenderCss]
   }
   if (oldState.selections !== newState.selections) {
-    return [DiffType.RenderIncremental]
+    return [DiffType.RenderIncremental, DiffType.RenderCss]
   }
   if (
     oldState.diagnostics === newState.diagnostics &&
