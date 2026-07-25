@@ -17,6 +17,7 @@ test('loads file content into editor lines', async () => {
   await loadContent(1)
 
   expect(EditorStates.get(1)).toEqual({
+    diagnostics: [],
     lines: ['first', 'second', 'third'],
     uid: 1,
     uri: 'file:///test.txt',

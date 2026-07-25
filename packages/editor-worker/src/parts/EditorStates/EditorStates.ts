@@ -5,6 +5,7 @@ const renderedStates = new Map<number, EditorState>()
 
 export const create = (uid: number, uri = ''): EditorState => {
   const state: EditorState = {
+    diagnostics: [],
     lines: [],
     uid,
     uri,

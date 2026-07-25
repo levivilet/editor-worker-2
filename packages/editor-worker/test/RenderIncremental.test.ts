@@ -3,6 +3,7 @@ import { renderIncremental } from '../src/parts/RenderIncremental/RenderIncremen
 
 test('returns patches for changed lines', () => {
   const oldState = {
+    diagnostics: [],
     lines: ['first line'],
     uid: 42,
     uri: 'file:///test.txt',
