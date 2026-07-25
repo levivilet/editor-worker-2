@@ -3,17 +3,21 @@ import type { EditorState } from '../EditorState/EditorState.ts'
 const states = new Map<number, EditorState>()
 const renderedStates = new Map<number, EditorState>()
 
-export const create = (uid: number, uri = '', languageId = 'plaintext', tokenizePath = ''): EditorState => {
+export const create = (uid: number, uri = '', languageId = 'plaintext', tokenizePath = '', width = 0): EditorState => {
   const state: EditorState = {
+    columnWidth: 9,
     content: '',
     diagnostics: [],
     languageId,
     lines: [],
+    longestLineWidth: 0,
+    scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [],
     tokenizePath,
     uid,
     uri,
+    width,
   }
   states.set(uid, state)
   return state
