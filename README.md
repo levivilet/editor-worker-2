@@ -1,1 +1,3 @@
-# editor-worker-2
+# about-view
+
+About View.
