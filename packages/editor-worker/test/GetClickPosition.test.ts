@@ -4,6 +4,8 @@ import type { EditorState } from '../src/parts/EditorState/EditorState.ts'
 import { getClickPosition } from '../src/parts/GetClickPosition/GetClickPosition.ts'
 
 const createState = (): EditorState => ({
+  canRedo: false,
+  canUndo: false,
   columnWidth: 9,
   diagnostics: [],
   findWidgetVisible: false,
@@ -15,14 +17,18 @@ const createState = (): EditorState => ({
   longestLineWidth: 90,
   maxLineY: 3,
   minLineY: 0,
+  modified: false,
   rowHeight: 20,
   scrollBarWidth: 0,
+  scrollLeft: 0,
+  scrollTop: 0,
   selections: new Uint32Array([0, 0, 0, 0]),
   tokenizedLines: [],
   tokenizePath: '',
   uid: 1,
   uri: 'file:///test.txt',
   useCache: true,
+  version: 0,
   width: 300,
   x: 100,
   y: 50,

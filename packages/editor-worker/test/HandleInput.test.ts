@@ -22,6 +22,8 @@ test('updates the text document and visible editor lines', async () => {
   await handleInput(1, 'first\r\nsecond\nthird')
 
   expect(EditorStates.get(1)).toEqual({
+    canRedo: false,
+    canUndo: false,
     columnWidth: 9,
     diagnostics: [],
     findWidgetVisible: false,
@@ -33,8 +35,11 @@ test('updates the text document and visible editor lines', async () => {
     longestLineWidth: 54,
     maxLineY: 3,
     minLineY: 0,
+    modified: false,
     rowHeight: 20,
     scrollBarWidth: 0,
+    scrollLeft: 0,
+    scrollTop: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [
       ['first', 'Token Keyword'],
@@ -45,6 +50,7 @@ test('updates the text document and visible editor lines', async () => {
     uid: 1,
     uri: 'file:///test.txt',
     useCache: true,
+    version: 1,
     width: 100,
     x: 0,
     y: 0,

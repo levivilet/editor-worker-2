@@ -4,6 +4,8 @@ import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 test('creates, isolates, and disposes editor states', () => {
   const initialSelections = new Uint32Array([0, 0, 0, 0])
   const firstState = {
+    canRedo: false,
+    canUndo: false,
     columnWidth: 9,
     diagnostics: [],
     findWidgetVisible: false,
@@ -15,14 +17,18 @@ test('creates, isolates, and disposes editor states', () => {
     longestLineWidth: 0,
     maxLineY: 0,
     minLineY: 0,
+    modified: false,
     rowHeight: 20,
     scrollBarWidth: 0,
+    scrollLeft: 0,
+    scrollTop: 0,
     selections: initialSelections,
     tokenizedLines: [],
     tokenizePath: '',
     uid: 1,
     uri: 'file:///one.txt',
     useCache: true,
+    version: 0,
     width: 100,
     x: 10,
     y: 20,

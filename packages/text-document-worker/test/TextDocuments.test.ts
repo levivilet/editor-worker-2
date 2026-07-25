@@ -2,7 +2,12 @@ import { expect, test } from '@jest/globals'
 import * as TextDocuments from '../src/parts/TextDocuments/TextDocuments.ts'
 
 test('stores content and returns requested line ranges', () => {
-  expect(TextDocuments.setContent(1, 'zero\none\ntwo\nthree')).toBe(4)
+  expect(TextDocuments.setContent(1, 'zero\none\ntwo\nthree')).toMatchObject({
+    lineCount: 4,
+    modified: false,
+    selections: [0, 0, 0, 0],
+    version: 1,
+  })
   expect(TextDocuments.getLines(1, 1, 3)).toEqual(['one', 'two'])
   expect(TextDocuments.getLines(1, 3, 10)).toEqual(['three'])
   TextDocuments.dispose(1)

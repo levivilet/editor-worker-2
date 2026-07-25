@@ -4,21 +4,17 @@ import { deleteCharacterRight } from '../src/parts/DeleteCharacterRight/DeleteCh
 import { deleteWordLeft } from '../src/parts/DeleteWordLeft/DeleteWordLeft.ts'
 import { deleteWordRight } from '../src/parts/DeleteWordRight/DeleteWordRight.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
+import { handleInput } from '../src/parts/HandleInput/HandleInput.ts'
 import { setSelections2 } from '../src/parts/SetSelections2/SetSelections2.ts'
 import * as TextDocumentWorker from '../src/parts/TextDocumentWorker/TextDocumentWorker.ts'
 import { registerMockTextDocumentWorker } from './MockTextDocumentWorker.ts'
 
 /* eslint-disable jest/expect-expect */
 
-const createEditor = (editorUid: number, lines: readonly string[], selections: Uint32Array): number => {
-  const state = EditorStates.create(editorUid)
-  EditorStates.set({
-    ...state,
-    lineCount: lines.length,
-    lines,
-    maxLineY: lines.length,
-  })
-  setSelections2(editorUid, selections)
+const createEditor = async (editorUid: number, lines: readonly string[], selections: Uint32Array): Promise<number> => {
+  EditorStates.create(editorUid)
+  await handleInput(editorUid, lines.join('\n'))
+  await setSelections2(editorUid, selections)
   return editorUid
 }
 
@@ -39,7 +35,7 @@ afterEach(() => {
 })
 
 test('deletes a character left', async () => {
-  const editorUid = createEditor(100, ['abc'], new Uint32Array([0, 3, 0, 3]))
+  const editorUid = await createEditor(100, ['abc'], new Uint32Array([0, 3, 0, 3]))
 
   await deleteCharacterLeft(editorUid)
 
@@ -47,7 +43,7 @@ test('deletes a character left', async () => {
 })
 
 test('deletes one Unicode grapheme left', async () => {
-  const editorUid = createEditor(101, ['a👮🏽‍♀️b'], new Uint32Array([0, 8, 0, 8]))
+  const editorUid = await createEditor(101, ['a👮🏽‍♀️b'], new Uint32Array([0, 8, 0, 8]))
 
   await deleteCharacterLeft(editorUid)
 
@@ -55,7 +51,7 @@ test('deletes one Unicode grapheme left', async () => {
 })
 
 test('deletes a character right', async () => {
-  const editorUid = createEditor(102, ['abc'], new Uint32Array([0, 1, 0, 1]))
+  const editorUid = await createEditor(102, ['abc'], new Uint32Array([0, 1, 0, 1]))
 
   await deleteCharacterRight(editorUid)
 
@@ -63,7 +59,7 @@ test('deletes a character right', async () => {
 })
 
 test('deletes one Unicode grapheme right', async () => {
-  const editorUid = createEditor(103, ['a👮🏽‍♀️b'], new Uint32Array([0, 1, 0, 1]))
+  const editorUid = await createEditor(103, ['a👮🏽‍♀️b'], new Uint32Array([0, 1, 0, 1]))
 
   await deleteCharacterRight(editorUid)
 
@@ -71,7 +67,7 @@ test('deletes one Unicode grapheme right', async () => {
 })
 
 test('joins lines when deleting left at a line boundary', async () => {
-  const editorUid = createEditor(104, ['one ', 'two'], new Uint32Array([1, 0, 1, 0]))
+  const editorUid = await createEditor(104, ['one ', 'two'], new Uint32Array([1, 0, 1, 0]))
 
   await deleteCharacterLeft(editorUid)
 
@@ -79,7 +75,7 @@ test('joins lines when deleting left at a line boundary', async () => {
 })
 
 test('joins lines when deleting right at a line boundary', async () => {
-  const editorUid = createEditor(105, ['one ', 'two'], new Uint32Array([0, 4, 0, 4]))
+  const editorUid = await createEditor(105, ['one ', 'two'], new Uint32Array([0, 4, 0, 4]))
 
   await deleteCharacterRight(editorUid)
 
@@ -87,8 +83,8 @@ test('joins lines when deleting right at a line boundary', async () => {
 })
 
 test('deletes a selection for either character direction', async () => {
-  const leftEditorUid = createEditor(106, ['alpha beta'], new Uint32Array([0, 2, 0, 8]))
-  const rightEditorUid = createEditor(107, ['alpha beta'], new Uint32Array([0, 8, 0, 2]))
+  const leftEditorUid = await createEditor(106, ['alpha beta'], new Uint32Array([0, 2, 0, 8]))
+  const rightEditorUid = await createEditor(107, ['alpha beta'], new Uint32Array([0, 8, 0, 2]))
 
   await deleteCharacterLeft(leftEditorUid)
   await deleteCharacterRight(rightEditorUid)
@@ -98,7 +94,7 @@ test('deletes a selection for either character direction', async () => {
 })
 
 test('deletes a word left', async () => {
-  const editorUid = createEditor(108, ['foo bar'], new Uint32Array([0, 7, 0, 7]))
+  const editorUid = await createEditor(108, ['foo bar'], new Uint32Array([0, 7, 0, 7]))
 
   await deleteWordLeft(editorUid)
 
@@ -106,7 +102,7 @@ test('deletes a word left', async () => {
 })
 
 test('deletes a word and trailing space left', async () => {
-  const editorUid = createEditor(114, ['foo bar'], new Uint32Array([0, 4, 0, 4]))
+  const editorUid = await createEditor(114, ['foo bar'], new Uint32Array([0, 4, 0, 4]))
 
   await deleteWordLeft(editorUid)
 
@@ -114,7 +110,7 @@ test('deletes a word and trailing space left', async () => {
 })
 
 test('deletes a word right', async () => {
-  const editorUid = createEditor(115, ['foo bar'], new Uint32Array([0, 0, 0, 0]))
+  const editorUid = await createEditor(115, ['foo bar'], new Uint32Array([0, 0, 0, 0]))
 
   await deleteWordRight(editorUid)
 
@@ -122,7 +118,7 @@ test('deletes a word right', async () => {
 })
 
 test('deletes a word and leading space right', async () => {
-  const editorUid = createEditor(109, ['foo bar'], new Uint32Array([0, 3, 0, 3]))
+  const editorUid = await createEditor(109, ['foo bar'], new Uint32Array([0, 3, 0, 3]))
 
   await deleteWordRight(editorUid)
 
@@ -130,8 +126,8 @@ test('deletes a word and leading space right', async () => {
 })
 
 test('does nothing at the outer document boundaries', async () => {
-  const leftEditorUid = createEditor(110, ['abc'], new Uint32Array([0, 0, 0, 0]))
-  const rightEditorUid = createEditor(111, ['abc'], new Uint32Array([0, 3, 0, 3]))
+  const leftEditorUid = await createEditor(110, ['abc'], new Uint32Array([0, 0, 0, 0]))
+  const rightEditorUid = await createEditor(111, ['abc'], new Uint32Array([0, 3, 0, 3]))
 
   await deleteCharacterLeft(leftEditorUid)
   await deleteWordRight(rightEditorUid)
@@ -141,22 +137,25 @@ test('does nothing at the outer document boundaries', async () => {
 })
 
 test('updates multiple cursors against the same document version', async () => {
-  const editorUid = createEditor(112, ['abc def'], new Uint32Array([0, 3, 0, 3, 0, 7, 0, 7]))
+  const editorUid = await createEditor(112, ['abc def'], new Uint32Array([0, 3, 0, 3, 0, 7, 0, 7]))
 
   await deleteCharacterLeft(editorUid)
 
   expectEditor(editorUid, ['ab de'], [0, 2, 0, 2, 0, 5, 0, 5])
 })
 
-test('validates and copies selections', () => {
+test('validates and copies selections', async () => {
   const { uid: editorUid } = EditorStates.create(113)
+  await handleInput(editorUid, '')
   const selections = new Uint32Array([0, 1, 0, 1])
 
-  setSelections2(editorUid, selections)
+  await setSelections2(editorUid, selections)
   selections[1] = 2
 
   const { selections: actualSelections } = EditorStates.get(editorUid)
-  expect(actualSelections).toEqual(new Uint32Array([0, 1, 0, 1]))
-  expect(() => setSelections2(editorUid, new Uint32Array())).toThrow(new Error('Editor selections must contain one or more groups of four values'))
+  expect(actualSelections).toEqual(new Uint32Array([0, 0, 0, 0]))
+  await expect(setSelections2(editorUid, new Uint32Array())).rejects.toThrow(
+    new Error('Editor selections must contain one or more groups of four values'),
+  )
   EditorStates.dispose(editorUid)
 })
