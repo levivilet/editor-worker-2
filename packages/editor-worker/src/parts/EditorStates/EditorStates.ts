@@ -1,17 +1,20 @@
 import type { EditorState } from '../EditorState/EditorState.ts'
+import * as EditorMetrics from '../EditorMetrics/EditorMetrics.ts'
 
 const states = new Map<number, EditorState>()
 const renderedStates = new Map<number, EditorState>()
 
-export const create = (uid: number, uri = '', languageId = 'plaintext', tokenizePath = '', width = 0): EditorState => {
+export const create = (uid: number, uri = '', languageId = 'plaintext', tokenizePath = '', x = 0, y = 0, width = 0, height = 0): EditorState => {
   const state: EditorState = {
-    columnWidth: 9,
+    columnWidth: EditorMetrics.ColumnWidth,
     content: '',
     diagnostics: [],
+    height,
     languageId,
     lineNumbers: true,
     lines: [],
     longestLineWidth: 0,
+    rowHeight: EditorMetrics.RowHeight,
     scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [],
@@ -19,6 +22,8 @@ export const create = (uid: number, uri = '', languageId = 'plaintext', tokenize
     uid,
     uri,
     width,
+    x,
+    y,
   }
   states.set(uid, state)
   return state

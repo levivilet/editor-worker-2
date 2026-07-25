@@ -6,10 +6,12 @@ test('returns patches for changed lines', () => {
     columnWidth: 9,
     content: 'first line',
     diagnostics: [],
+    height: 200,
     languageId: 'plaintext',
     lineNumbers: true,
     lines: ['first line'],
     longestLineWidth: 90,
+    rowHeight: 20,
     scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [['first line', 'Token Text']],
@@ -17,6 +19,8 @@ test('returns patches for changed lines', () => {
     uid: 42,
     uri: 'file:///test.txt',
     width: 100,
+    x: 0,
+    y: 0,
   }
   const newState = {
     ...oldState,

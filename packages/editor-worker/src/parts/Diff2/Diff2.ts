@@ -7,6 +7,9 @@ export const diff2 = (uid: number): readonly number[] => {
   if (!oldState) {
     return [DiffType.RenderItems]
   }
+  if (oldState.selections !== newState.selections) {
+    return [DiffType.RenderIncremental]
+  }
   if (oldState.diagnostics === newState.diagnostics && oldState.lines === newState.lines && oldState.lineNumbers === newState.lineNumbers) {
     return []
   }

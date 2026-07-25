@@ -7,10 +7,12 @@ test('creates, isolates, and disposes editor states', () => {
     columnWidth: 9,
     content: '',
     diagnostics: [],
+    height: 200,
     languageId: 'plaintext',
     lineNumbers: true,
     lines: [],
     longestLineWidth: 0,
+    rowHeight: 20,
     scrollBarWidth: 0,
     selections: initialSelections,
     tokenizedLines: [],
@@ -18,17 +20,23 @@ test('creates, isolates, and disposes editor states', () => {
     uid: 1,
     uri: 'file:///one.txt',
     width: 100,
+    x: 10,
+    y: 20,
   }
   const secondState = {
     ...firstState,
+    height: 400,
     languageId: 'typescript',
     tokenizePath: '/tokenize-typescript.js',
     uid: 2,
     uri: 'file:///two.ts',
-    width: 200,
+    width: 300,
+    x: 30,
+    y: 40,
   }
-  expect(EditorStates.create(1, 'file:///one.txt', 'plaintext', '', 100)).toEqual(firstState)
-  expect(EditorStates.create(2, 'file:///two.ts', 'typescript', '/tokenize-typescript.js', 200)).toEqual(secondState)
+
+  expect(EditorStates.create(1, 'file:///one.txt', 'plaintext', '', 10, 20, 100, 200)).toEqual(firstState)
+  expect(EditorStates.create(2, 'file:///two.ts', 'typescript', '/tokenize-typescript.js', 30, 40, 300, 400)).toEqual(secondState)
   expect(EditorStates.get(1)).toEqual(firstState)
   expect(EditorStates.get(2)).toEqual(secondState)
 

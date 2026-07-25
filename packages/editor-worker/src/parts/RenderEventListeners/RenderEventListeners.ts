@@ -4,6 +4,10 @@ import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEven
 export const renderEventListeners = (): readonly DomEventListener[] => {
   return [
     {
+      name: DomEventListenerFunctions.HandleClick,
+      params: ['handleClick', 'event.clientX', 'event.clientY'],
+    },
+    {
       name: DomEventListenerFunctions.HandleInput,
       params: ['handleInput', 'event.target.value'],
     },

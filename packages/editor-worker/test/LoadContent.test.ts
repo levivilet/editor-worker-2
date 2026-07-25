@@ -33,10 +33,12 @@ test('loads file content into editor lines', async () => {
     columnWidth: 9,
     content: 'first\r\nsecond\nthird',
     diagnostics: [],
+    height: 0,
     languageId: 'typescript',
     lineNumbers: true,
     lines: ['first', 'second', 'third'],
     longestLineWidth: 54,
+    rowHeight: 20,
     scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [
@@ -48,6 +50,8 @@ test('loads file content into editor lines', async () => {
     uid: 1,
     uri: 'file:///test.ts',
     width: 100,
+    x: 0,
+    y: 0,
   })
   expect(fileSystemRpc.invocations).toEqual([['FileSystem.readFile', 'file:///test.ts']])
   expect(syntaxHighlightingRpc.invocations).toEqual([

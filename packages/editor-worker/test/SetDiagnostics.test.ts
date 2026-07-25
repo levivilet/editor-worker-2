@@ -30,7 +30,9 @@ test.each([0, 1, 2, 10, 100, 1000])('sets and renders %i diagnostics', (count) =
   const { diagnostics: actualDiagnostics } = state
   expect(actualDiagnostics).toBe(diagnostics)
 
-  const diagnosticDom = getEditorVirtualDom(state).slice(5)
+  const editorDom = getEditorVirtualDom(state)
+  const diagnosticIndex = editorDom.findIndex((node) => node.className === ClassNames.LayerDiagnostics)
+  const diagnosticDom = diagnosticIndex === -1 ? [] : editorDom.slice(diagnosticIndex, diagnosticIndex + count + 1)
   const expectedDiagnosticDom =
     count === 0
       ? []
