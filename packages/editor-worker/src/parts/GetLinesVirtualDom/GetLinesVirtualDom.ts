@@ -1,8 +1,9 @@
 import { type VirtualDomNode, VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
+import * as ClassNames from '../ClassNames/ClassNames.ts'
 
 const editorLineNode: VirtualDomNode = {
   childCount: 1,
-  className: 'EditorLine',
+  className: ClassNames.EditorLine,
   type: VirtualDomElements.Div,
 }
 
@@ -10,7 +11,7 @@ export const getLinesVirtualDom = (lines: readonly string[]): readonly VirtualDo
   const dom: VirtualDomNode[] = [
     {
       childCount: lines.length,
-      className: 'EditorLines',
+      className: ClassNames.EditorLines,
       type: VirtualDomElements.Div,
     },
   ]
