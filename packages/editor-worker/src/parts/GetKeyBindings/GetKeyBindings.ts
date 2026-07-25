@@ -1,4 +1,4 @@
-import { KeyCode, WhenExpression } from '@lvce-editor/virtual-dom-worker'
+import { KeyCode, KeyModifier, WhenExpression } from '@lvce-editor/virtual-dom-worker'
 import type { KeyBinding } from '../KeyBinding/KeyBinding.ts'
 
 export const getKeyBindings = (): readonly KeyBinding[] => {
@@ -6,6 +6,11 @@ export const getKeyBindings = (): readonly KeyBinding[] => {
     {
       command: 'Editor.deleteCharacterLeft',
       key: KeyCode.Backspace,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.openFind2',
+      key: KeyModifier.CtrlCmd | KeyCode.KeyF,
       when: WhenExpression.FocusEditorText,
     },
   ]

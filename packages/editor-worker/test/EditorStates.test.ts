@@ -6,6 +6,7 @@ test('creates, isolates, and disposes editor states', () => {
   const firstState = {
     columnWidth: 9,
     diagnostics: [],
+    findWidgetVisible: false,
     height: 200,
     languageId: 'plaintext',
     lineCount: 0,

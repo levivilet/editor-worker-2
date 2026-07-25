@@ -5,6 +5,7 @@ test('returns patches for changed lines', () => {
   const oldState = {
     columnWidth: 9,
     diagnostics: [],
+    findWidgetVisible: false,
     height: 200,
     languageId: 'plaintext',
     lineCount: 1,

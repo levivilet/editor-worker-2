@@ -35,6 +35,7 @@ test('loads file content into editor lines', async () => {
   expect(EditorStates.get(1)).toEqual({
     columnWidth: 9,
     diagnostics: [],
+    findWidgetVisible: false,
     height: 0,
     languageId: 'typescript',
     lineCount: 3,

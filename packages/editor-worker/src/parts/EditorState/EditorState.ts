@@ -3,6 +3,7 @@ import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
 export interface EditorState {
   readonly columnWidth: number
   readonly diagnostics: readonly Diagnostic[]
+  readonly findWidgetVisible: boolean
   readonly height: number
   readonly languageId: string
   readonly lineCount: number

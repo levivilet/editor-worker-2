@@ -8,6 +8,7 @@ const createState = (lineNumbers: boolean): EditorState => {
   return {
     columnWidth: 9,
     diagnostics: [],
+    findWidgetVisible: false,
     height: 200,
     languageId: 'plaintext',
     lineCount: 2,
