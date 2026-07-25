@@ -1,9 +1,6 @@
-import * as EditorStates from '../EditorStates/EditorStates.ts'
+import type { OpenFindOutcome } from '../FindWidgetLifecycle/FindWidgetLifecycle.ts'
+import * as FindWidgetLifecycle from '../FindWidgetLifecycle/FindWidgetLifecycle.ts'
 
-export const openFind = (uid: number): void => {
-  const state = EditorStates.get(uid)
-  EditorStates.set({
-    ...state,
-    findWidgetVisible: true,
-  })
+export const openFind = (uid: number): Promise<OpenFindOutcome> => {
+  return FindWidgetLifecycle.open(uid)
 }

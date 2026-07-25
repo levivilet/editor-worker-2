@@ -1,0 +1,5 @@
+# Closure is immediate and cleanup is awaited
+
+Widget and editor closure remove their visible state immediately while their returned promises act as cleanup barriers. Widget close waits for that instance's in-flight opening and remote disposal; editor close is one atomic root transition that removes the editor, removes all current widget roots in one renderer batch, starts cleanup for current instances, and joins every previously retired operation owned by the editor. Editor closure is terminal and later widget intent returns `editorClosed`.
+
+Cleanup attempts all owned work with all-settled semantics and rejects afterward with an `AggregateError` for failures; one failed widget never prevents sibling cleanup. Barriers have no arbitrary timeout because an untracked late create could leak. Self-requested widget close is the exception to waiting: `requestClose(context)` acknowledges logical removal so the worker command can return before the editor waits for that worker to dispose it, avoiding a dependency cycle.

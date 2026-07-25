@@ -1,3 +1,4 @@
+import * as ApplyDocumentEdits from '../ApplyDocumentEdits/ApplyDocumentEdits.ts'
 import * as Clipboard from '../Clipboard/Clipboard.ts'
 import * as CloseFind from '../CloseFind/CloseFind.ts'
 import * as Create from '../Create/Create.ts'
@@ -7,7 +8,9 @@ import * as DeleteWordLeft from '../DeleteWordLeft/DeleteWordLeft.ts'
 import * as DeleteWordRight from '../DeleteWordRight/DeleteWordRight.ts'
 import * as Diff2 from '../Diff2/Diff2.ts'
 import * as Dispose from '../Dispose/Dispose.ts'
+import * as FindWidgetCommands from '../FindWidgetCommands/FindWidgetCommands.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
+import * as GetLines2 from '../GetLines2/GetLines2.ts'
 import * as GetSelections2 from '../GetSelections2/GetSelections2.ts'
 import * as GetText from '../GetText/GetText.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
@@ -55,6 +58,7 @@ const getCommandIds = (): readonly string[] => [
   'deleteLine',
   'deleteWordLeft',
   'deleteWordRight',
+  'executeWidgetCommand',
   'getSelections',
   'getSelections2',
   'getText',
@@ -106,6 +110,7 @@ const getCommandIds = (): readonly string[] => [
 const noop = (): undefined => undefined
 
 export const commandMap = {
+  'Editor.applyDocumentEdits': ApplyDocumentEdits.applyDocumentEdits,
   'Editor.cancelSelection': LegacyBasicCommands.cancelSelection,
   'Editor.closeFind': CloseFind.closeFind,
   'Editor.copy': Clipboard.copy,
@@ -134,9 +139,11 @@ export const commandMap = {
   'Editor.deleteWordLeft': DeleteWordLeft.deleteWordLeft,
   'Editor.deleteWordRight': DeleteWordRight.deleteWordRight,
   'Editor.diff2': Diff2.diff2,
-  'Editor.dispose': Dispose.dispose,
+  'Editor.dispose': Dispose.disposeAsync,
+  'Editor.executeWidgetCommand': FindWidgetCommands.executeWidgetCommand,
   'Editor.getCommandIds': getCommandIds,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
+  'Editor.getLines2': GetLines2.getLines2,
   'Editor.getQuickPickMenuEntries': emptyArray,
   'Editor.getSelections': LegacyBasicCommands.getSelections,
   'Editor.getSelections2': GetSelections2.getSelections2,
@@ -162,6 +169,7 @@ export const commandMap = {
   'Editor.redo': TextDocumentCommands.redo,
   'Editor.render2': Render2.render2,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
+  'Editor.requestFindWidgetClose': CloseFind.requestFindWidgetClose,
   'Editor.resize': Resize.resize,
   'Editor.save': Save.save,
   'Editor.selectAll': TextDocumentCommands.selectAll,
@@ -188,7 +196,7 @@ export const commandMap = {
   'Editor.unindent': TextDocumentCommands.unindent,
   'Editor.unIndent': TextDocumentCommands.unindent,
   'Editor.updateDiagnostics': noop,
-  'FindWidget.close': CloseFind.closeFind,
+  ...FindWidgetCommands.commandMap,
   'Font.ensure': noop,
   'Initialize.initialize': noop,
   'TextDocumentWorker.setPort': TextDocumentWorker.setPort,

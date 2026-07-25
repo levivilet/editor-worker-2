@@ -4,6 +4,7 @@ import { commandMap } from '../src/parts/CommandMap/CommandMap.ts'
 test('contains editor integration commands', () => {
   expect(Object.keys(commandMap)).toEqual(
     expect.arrayContaining([
+      'Editor.applyDocumentEdits',
       'Editor.closeFind',
       'Editor.create',
       'Editor.create2',
@@ -49,6 +50,7 @@ test('contains editor integration commands', () => {
       'Editor.pointerMove',
       'Editor.pointerUp',
       'Editor.redo',
+      'Editor.requestFindWidgetClose',
       'Editor.render2',
       'Editor.renderEventListeners',
       'Editor.resize',
@@ -71,6 +73,8 @@ test('contains editor integration commands', () => {
       'Editor.unindent',
       'Editor.updateDiagnostics',
       'FindWidget.close',
+      'FindWidget.handleInput',
+      'FindWidget.replaceAll',
       'Font.ensure',
       'Initialize.initialize',
       'TextDocumentWorker.setPort',
@@ -101,7 +105,7 @@ test('contains editor integration commands', () => {
   expect(commandMap['Editor.setSelections2']).toEqual(expect.any(Function))
   expect(commandMap['Editor.updateDiagnostics']()).toBeUndefined()
   expect(commandMap['Font.ensure']()).toBeUndefined()
-  expect(commandMap['FindWidget.close']).toEqual(expect.any(Function))
+  expect((commandMap as Record<string, unknown>)['FindWidget.close']).toEqual(expect.any(Function))
   expect(commandMap['Initialize.initialize']()).toBeUndefined()
   expect(commandMap['TextDocumentWorker.setPort']).toEqual(expect.any(Function))
 })

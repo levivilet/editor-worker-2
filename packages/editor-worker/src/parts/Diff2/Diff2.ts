@@ -30,7 +30,6 @@ export const diff2 = (uid: number): readonly number[] => {
   if (
     oldState.diagnostics === newState.diagnostics &&
     oldState.errorMessage === newState.errorMessage &&
-    oldState.findWidgetVisible === newState.findWidgetVisible &&
     oldState.lines === newState.lines &&
     oldState.lineNumbers === newState.lineNumbers
   ) {
