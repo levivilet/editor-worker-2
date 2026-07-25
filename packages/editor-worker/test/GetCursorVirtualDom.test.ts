@@ -10,6 +10,7 @@ test('renders the cursor in its own div at the selected position', () => {
     diagnostics: [],
     height: 200,
     languageId: 'plaintext',
+    lineNumbers: true,
     lines: ['first line', 'second line'],
     longestLineWidth: 99,
     rowHeight: 20,

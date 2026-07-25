@@ -8,6 +8,7 @@ const createState = (): EditorState => ({
   diagnostics: [],
   height: 200,
   languageId: 'plaintext',
+  lineNumbers: true,
   lines: ['first line', 'second', ''],
   longestLineWidth: 90,
   rowHeight: 20,
