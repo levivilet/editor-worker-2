@@ -59,3 +59,24 @@ test('rejects unknown diffs', () => {
   expect(() => render2(43, [999])).toThrow(new Error('Unknown editor diff: 999'))
   expect(dispose(43)).toEqual([])
 })
+
+test('renders later content changes incrementally', async () => {
+  let content = 'first line'
+  using _fileSystemRpc = FileSystemWorker.registerMockRpc({
+    'FileSystem.readFile': async (): Promise<string> => content,
+  })
+  create(44, 'file:///test.txt')
+  await loadContent(44)
+  render2(44, diff2(44))
+
+  content = 'updated first line\nsecond line'
+  await loadContent(44)
+
+  const diffResult = diff2(44)
+  const commands = render2(44, diffResult)
+
+  expect(diffResult).toEqual([DiffType.RenderIncremental])
+  expect(commands).toEqual([['Viewlet.setPatches', 44, expect.any(Array)]])
+  expect(diff2(44)).toEqual([])
+  expect(dispose(44)).toEqual([])
+})
