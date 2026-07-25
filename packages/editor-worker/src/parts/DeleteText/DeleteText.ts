@@ -1,6 +1,8 @@
 import * as EditorStates from '../EditorStates/EditorStates.ts'
-import * as GetLines from '../GetLines/GetLines.ts'
+import * as GetLongestLineWidth from '../GetLongestLineWidth/GetLongestLineWidth.ts'
+import * as GetScrollBarWidth from '../GetScrollBarWidth/GetScrollBarWidth.ts'
 import * as HighlightLines from '../HighlightLines/HighlightLines.ts'
+import * as TextDocumentWorker from '../TextDocumentWorker/TextDocumentWorker.ts'
 
 interface OffsetRange {
   readonly end: number
@@ -180,7 +182,7 @@ const getOffsetAfterEdits = (offset: number, ranges: readonly OffsetRange[]): nu
 
 export const deleteText = async (uid: number, direction: Direction, unit: Unit): Promise<void> => {
   const state = EditorStates.get(uid)
-  const { languageId, lines: stateLines, selections, tokenizePath } = state
+  const { columnWidth, languageId, lines: stateLines, selections, tokenizePath, width } = state
   const lines = stateLines.length === 0 ? [''] : stateLines
   const selectionRanges: OffsetRange[] = []
   for (let i = 0; i < selections.length; i += 4) {
@@ -189,8 +191,15 @@ export const deleteText = async (uid: number, direction: Direction, unit: Unit):
   const ranges = mergeRanges(selectionRanges)
   const content = lines.join('\n')
   const newContent = applyRanges(content, ranges)
-  const newLines = GetLines.getLines(newContent)
-  const tokenizedLines = await HighlightLines.highlightLines(newContent, languageId, tokenizePath, newLines)
+  const rpc = await TextDocumentWorker.get()
+  const lineCount = await rpc.invoke('TextDocument.setContent', uid, newContent)
+  const minLineY = 0
+  const maxLineY = lineCount
+  const newLines = await rpc.invoke('TextDocument.getLines', uid, minLineY, maxLineY)
+  const visibleContent = newLines.join('\n')
+  const tokenizedLines = await HighlightLines.highlightLines(visibleContent, languageId, tokenizePath, newLines)
+  const longestLineWidth = GetLongestLineWidth.getLongestLineWidth(newLines, columnWidth)
+  const scrollBarWidth = GetScrollBarWidth.getScrollBarWidth(width, longestLineWidth)
   const newSelections = new Uint32Array(selections.length)
   for (let i = 0; i < selectionRanges.length; i++) {
     const newOffset = getOffsetAfterEdits(selectionRanges[i].start, ranges)
@@ -203,8 +212,12 @@ export const deleteText = async (uid: number, direction: Direction, unit: Unit):
   }
   EditorStates.set({
     ...state,
-    content: newContent,
+    lineCount,
     lines: newLines,
+    longestLineWidth,
+    maxLineY,
+    minLineY,
+    scrollBarWidth,
     selections: newSelections,
     tokenizedLines,
   })

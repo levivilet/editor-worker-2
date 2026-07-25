@@ -4,13 +4,15 @@ import { renderIncremental } from '../src/parts/RenderIncremental/RenderIncremen
 test('returns patches for changed lines', () => {
   const oldState = {
     columnWidth: 9,
-    content: 'first line',
     diagnostics: [],
     height: 200,
     languageId: 'plaintext',
+    lineCount: 1,
     lineNumbers: true,
     lines: ['first line'],
     longestLineWidth: 90,
+    maxLineY: 1,
+    minLineY: 0,
     rowHeight: 20,
     scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
@@ -24,8 +26,9 @@ test('returns patches for changed lines', () => {
   }
   const newState = {
     ...oldState,
-    content: 'updated first line\nsecond line',
+    lineCount: 2,
     lines: ['updated first line', 'second line'],
+    maxLineY: 2,
     tokenizedLines: [
       ['updated first line', 'Token Text'],
       ['second line', 'Token Text'],

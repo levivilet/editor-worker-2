@@ -4,8 +4,11 @@ import { create } from '../src/parts/Create/Create.ts'
 import { dispose } from '../src/parts/Dispose/Dispose.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { loadContent } from '../src/parts/LoadContent/LoadContent.ts'
+import * as TextDocumentWorker from '../src/parts/TextDocumentWorker/TextDocumentWorker.ts'
+import { registerMockTextDocumentWorker } from './MockTextDocumentWorker.ts'
 
 test('loads file content into editor lines', async () => {
+  const textDocumentRpc = registerMockTextDocumentWorker()
   using fileSystemRpc = FileSystemWorker.registerMockRpc({
     'FileSystem.readFile': async (uri: string): Promise<string> => {
       expect(uri).toBe('file:///test.ts')
@@ -31,13 +34,15 @@ test('loads file content into editor lines', async () => {
 
   expect(EditorStates.get(1)).toEqual({
     columnWidth: 9,
-    content: 'first\r\nsecond\nthird',
     diagnostics: [],
     height: 0,
     languageId: 'typescript',
+    lineCount: 3,
     lineNumbers: true,
     lines: ['first', 'second', 'third'],
     longestLineWidth: 54,
+    maxLineY: 3,
+    minLineY: 0,
     rowHeight: 20,
     scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
@@ -54,9 +59,14 @@ test('loads file content into editor lines', async () => {
     y: 0,
   })
   expect(fileSystemRpc.invocations).toEqual([['FileSystem.readFile', 'file:///test.ts']])
+  expect(textDocumentRpc.invocations).toEqual([
+    ['TextDocument.setContent', 1, 'first\r\nsecond\nthird'],
+    ['TextDocument.getLines', 1, 0, 3],
+  ])
   expect(syntaxHighlightingRpc.invocations).toEqual([
-    ['Tokenizer.tokenizeCodeBlock', 'first\r\nsecond\nthird', 'typescript', '/tokenize-typescript.js'],
+    ['Tokenizer.tokenizeCodeBlock', 'first\nsecond\nthird', 'typescript', '/tokenize-typescript.js'],
   ])
   dispose(1)
+  TextDocumentWorker.reset()
   await SyntaxHighlightingWorker.dispose()
 })

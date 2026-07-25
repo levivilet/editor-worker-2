@@ -13,6 +13,7 @@ import * as Render2 from '../Render2/Render2.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as SetDiagnostics from '../SetDiagnostics/SetDiagnostics.ts'
 import * as SetSelections2 from '../SetSelections2/SetSelections2.ts'
+import * as TextDocumentWorker from '../TextDocumentWorker/TextDocumentWorker.ts'
 
 const emptyArray = (): readonly never[] => []
 
@@ -50,4 +51,5 @@ export const commandMap = {
   'Editor.updateDiagnostics': noop,
   'Font.ensure': noop,
   'Initialize.initialize': noop,
+  'TextDocumentWorker.setPort': TextDocumentWorker.setPort,
 }

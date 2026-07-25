@@ -7,13 +7,15 @@ import { getEditorVirtualDom } from '../src/parts/GetEditorVirtualDom/GetEditorV
 const createState = (lineNumbers: boolean): EditorState => {
   return {
     columnWidth: 9,
-    content: 'first\nsecond',
     diagnostics: [],
     height: 200,
     languageId: 'plaintext',
+    lineCount: 2,
     lineNumbers,
     lines: ['first', 'second'],
     longestLineWidth: 90,
+    maxLineY: 2,
+    minLineY: 0,
     rowHeight: 20,
     scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
@@ -40,6 +42,9 @@ test('renders line numbers, lines, and cursor inside the clickable editor conten
   })
   expect(dom[1]).toMatchObject({
     className: 'EditorInput',
+  })
+  expect(dom[2]).toMatchObject({
+    value: 'first\nsecond',
   })
   expect(dom[3]).toEqual({
     childCount: 3,

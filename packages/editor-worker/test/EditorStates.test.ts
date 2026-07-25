@@ -5,13 +5,15 @@ test('creates, isolates, and disposes editor states', () => {
   const initialSelections = new Uint32Array([0, 0, 0, 0])
   const firstState = {
     columnWidth: 9,
-    content: '',
     diagnostics: [],
     height: 200,
     languageId: 'plaintext',
+    lineCount: 0,
     lineNumbers: true,
     lines: [],
     longestLineWidth: 0,
+    maxLineY: 0,
+    minLineY: 0,
     rowHeight: 20,
     scrollBarWidth: 0,
     selections: initialSelections,
@@ -42,8 +44,9 @@ test('creates, isolates, and disposes editor states', () => {
 
   const changedFirstState = {
     ...firstState,
-    content: 'one',
+    lineCount: 1,
     lines: ['one'],
+    maxLineY: 1,
     tokenizedLines: [['one', 'Token Text']],
   }
   EditorStates.set(changedFirstState)

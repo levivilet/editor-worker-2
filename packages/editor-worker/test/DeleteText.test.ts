@@ -1,10 +1,12 @@
-import { expect, test } from '@jest/globals'
+import { afterEach, beforeEach, expect, test } from '@jest/globals'
 import { deleteCharacterLeft } from '../src/parts/DeleteCharacterLeft/DeleteCharacterLeft.ts'
 import { deleteCharacterRight } from '../src/parts/DeleteCharacterRight/DeleteCharacterRight.ts'
 import { deleteWordLeft } from '../src/parts/DeleteWordLeft/DeleteWordLeft.ts'
 import { deleteWordRight } from '../src/parts/DeleteWordRight/DeleteWordRight.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { setSelections2 } from '../src/parts/SetSelections2/SetSelections2.ts'
+import * as TextDocumentWorker from '../src/parts/TextDocumentWorker/TextDocumentWorker.ts'
+import { registerMockTextDocumentWorker } from './MockTextDocumentWorker.ts'
 
 /* eslint-disable jest/expect-expect */
 
@@ -12,21 +14,29 @@ const createEditor = (editorUid: number, lines: readonly string[], selections: U
   const state = EditorStates.create(editorUid)
   EditorStates.set({
     ...state,
-    content: lines.join('\n'),
+    lineCount: lines.length,
     lines,
+    maxLineY: lines.length,
   })
   setSelections2(editorUid, selections)
   return editorUid
 }
 
 const expectEditor = (editorUid: number, lines: readonly string[], selections: readonly number[]): void => {
-  const { content, lines: actualLines, selections: actualSelections, tokenizedLines } = EditorStates.get(editorUid)
-  expect(content).toBe(lines.join('\n'))
+  const { lines: actualLines, selections: actualSelections, tokenizedLines } = EditorStates.get(editorUid)
   expect(actualLines).toEqual(lines)
   expect(actualSelections).toEqual(new Uint32Array(selections))
   expect(tokenizedLines).toEqual(lines.map((line) => [line, 'Token Text']))
   EditorStates.dispose(editorUid)
 }
+
+beforeEach(() => {
+  registerMockTextDocumentWorker()
+})
+
+afterEach(() => {
+  TextDocumentWorker.reset()
+})
 
 test('deletes a character left', async () => {
   const editorUid = createEditor(100, ['abc'], new Uint32Array([0, 3, 0, 3]))

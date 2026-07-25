@@ -25,6 +25,7 @@ test('contains only the minimal editor integration commands', () => {
     'Editor.updateDiagnostics',
     'Font.ensure',
     'Initialize.initialize',
+    'TextDocumentWorker.setPort',
   ])
   expect(commandMap['Editor.getCommandIds']()).toEqual([
     'deleteCharacterLeft',
@@ -61,4 +62,5 @@ test('contains only the minimal editor integration commands', () => {
   expect(commandMap['Editor.updateDiagnostics']()).toBeUndefined()
   expect(commandMap['Font.ensure']()).toBeUndefined()
   expect(commandMap['Initialize.initialize']()).toBeUndefined()
+  expect(commandMap['TextDocumentWorker.setPort']).toEqual(expect.any(Function))
 })

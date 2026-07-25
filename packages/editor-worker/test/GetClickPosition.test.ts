@@ -4,13 +4,15 @@ import { getClickPosition } from '../src/parts/GetClickPosition/GetClickPosition
 
 const createState = (): EditorState => ({
   columnWidth: 9,
-  content: 'first line\nsecond\n',
   diagnostics: [],
   height: 200,
   languageId: 'plaintext',
+  lineCount: 3,
   lineNumbers: true,
   lines: ['first line', 'second', ''],
   longestLineWidth: 90,
+  maxLineY: 3,
+  minLineY: 0,
   rowHeight: 20,
   scrollBarWidth: 0,
   selections: new Uint32Array([0, 0, 0, 0]),

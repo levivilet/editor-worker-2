@@ -11,8 +11,11 @@ import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { loadContent } from '../src/parts/LoadContent/LoadContent.ts'
 import * as MergeClassNames from '../src/parts/MergeClassNames/MergeClassNames.ts'
 import { render2 } from '../src/parts/Render2/Render2.ts'
+import * as TextDocumentWorker from '../src/parts/TextDocumentWorker/TextDocumentWorker.ts'
+import { registerMockTextDocumentWorker } from './MockTextDocumentWorker.ts'
 
 test('loads and renders file lines', async () => {
+  registerMockTextDocumentWorker()
   using _fileSystemRpc = FileSystemWorker.registerMockRpc({
     'FileSystem.readFile': async (): Promise<string> => 'first line\nsecond line',
   })
@@ -136,6 +139,7 @@ test('loads and renders file lines', async () => {
   ])
 
   expect(dispose(42)).toEqual([])
+  TextDocumentWorker.reset()
   await SyntaxHighlightingWorker.dispose()
 })
 
@@ -246,6 +250,7 @@ test('rejects unknown diffs', () => {
 })
 
 test('renders later content changes incrementally', async () => {
+  registerMockTextDocumentWorker()
   let content = 'first line'
   using _fileSystemRpc = FileSystemWorker.registerMockRpc({
     'FileSystem.readFile': async (): Promise<string> => content,
@@ -271,6 +276,7 @@ test('renders later content changes incrementally', async () => {
   expect(commands[0][2]).not.toEqual([])
   expect(diff2(44)).toEqual([])
   expect(dispose(44)).toEqual([])
+  TextDocumentWorker.reset()
   await SyntaxHighlightingWorker.dispose()
 })
 
