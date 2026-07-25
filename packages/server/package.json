@@ -1,0 +1,16 @@
+{
+  "name": "@lvce-editor/editor-worker-2-server",
+  "version": "0.0.0-dev",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/server.js",
+    "postinstall": "node src/postinstall.js"
+  },
+  "dependencies": {
+    "@lvce-editor/server": "^0.93.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1"
+  }
+}
