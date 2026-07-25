@@ -37,7 +37,12 @@
     "testMatch": [
       "**/test/**"
     ],
-    "collectCoverage": false
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "branches": 80
+      }
+    }
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",
