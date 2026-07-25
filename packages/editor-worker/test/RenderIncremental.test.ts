@@ -7,6 +7,7 @@ test('returns patches for changed lines', () => {
     content: 'first line',
     diagnostics: [],
     languageId: 'plaintext',
+    lineNumbers: true,
     lines: ['first line'],
     longestLineWidth: 90,
     scrollBarWidth: 0,

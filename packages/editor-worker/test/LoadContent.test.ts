@@ -34,6 +34,7 @@ test('loads file content into editor lines', async () => {
     content: 'first\r\nsecond\nthird',
     diagnostics: [],
     languageId: 'typescript',
+    lineNumbers: true,
     lines: ['first', 'second', 'third'],
     longestLineWidth: 54,
     scrollBarWidth: 0,

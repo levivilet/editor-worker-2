@@ -8,6 +8,7 @@ test('creates, isolates, and disposes editor states', () => {
     content: '',
     diagnostics: [],
     languageId: 'plaintext',
+    lineNumbers: true,
     lines: [],
     longestLineWidth: 0,
     scrollBarWidth: 0,
