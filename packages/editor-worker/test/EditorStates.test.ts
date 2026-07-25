@@ -11,9 +11,14 @@ test('creates, isolates, and disposes editor states', () => {
   expect(EditorStates.get(1)).toEqual({ lines: ['one'], uid: 1, uri: 'file:///one.txt' })
   expect(EditorStates.get(2)).toEqual({ lines: [], uid: 2, uri: 'file:///two.txt' })
 
+  expect(EditorStates.getRendered(1)).toBeUndefined()
+  EditorStates.setRendered(EditorStates.get(1))
+  expect(EditorStates.getRendered(1)).toEqual({ lines: ['one'], uid: 1, uri: 'file:///one.txt' })
+
   EditorStates.dispose(1)
 
   expect(() => EditorStates.get(1)).toThrow(new Error('Editor state not found: 1'))
+  expect(EditorStates.getRendered(1)).toBeUndefined()
   expect(EditorStates.get(2)).toEqual({ lines: [], uid: 2, uri: 'file:///two.txt' })
   EditorStates.dispose(2)
 })

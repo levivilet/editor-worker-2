@@ -1,6 +1,7 @@
 import type { EditorState } from '../EditorState/EditorState.ts'
 
 const states = new Map<number, EditorState>()
+const renderedStates = new Map<number, EditorState>()
 
 export const create = (uid: number, uri = ''): EditorState => {
   const state: EditorState = {
@@ -14,6 +15,7 @@ export const create = (uid: number, uri = ''): EditorState => {
 
 export const dispose = (uid: number): void => {
   states.delete(uid)
+  renderedStates.delete(uid)
 }
 
 export const get = (uid: number): EditorState => {
@@ -27,4 +29,13 @@ export const get = (uid: number): EditorState => {
 export const set = (state: EditorState): void => {
   const { uid } = state
   states.set(uid, state)
+}
+
+export const getRendered = (uid: number): EditorState | undefined => {
+  return renderedStates.get(uid)
+}
+
+export const setRendered = (state: EditorState): void => {
+  const { uid } = state
+  renderedStates.set(uid, state)
 }
