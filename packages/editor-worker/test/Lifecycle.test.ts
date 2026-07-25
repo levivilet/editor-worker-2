@@ -138,7 +138,7 @@ test('loads and renders file lines', async () => {
     [
       'Viewlet.setCss',
       42,
-      `.EditorCursor-42-0 {
+      `[class~="EditorCursor-42-0"] {
   translate: 0px 0px;
 }`,
     ],
@@ -230,7 +230,7 @@ test('renders non-empty diagnostics inside a div', () => {
     [
       'Viewlet.setCss',
       44,
-      `.EditorCursor-44-0 {
+      `[class~="EditorCursor-44-0"] {
   translate: 0px 0px;
 }`,
     ],

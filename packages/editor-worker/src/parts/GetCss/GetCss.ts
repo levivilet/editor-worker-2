@@ -11,7 +11,7 @@ export const getCss = (state: EditorState): string => {
     const x = columnIndex * columnWidth
     const y = rowIndex * rowHeight
     const cursorClassName = GetCursorClassName.getCursorClassName(uid, cursorIndex)
-    rules.push(`.${cursorClassName} {
+    rules.push(`[class~="${cursorClassName}"] {
   translate: ${x}px ${y}px;
 }`)
   }

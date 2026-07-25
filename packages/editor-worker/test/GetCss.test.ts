@@ -19,17 +19,17 @@ test('renders dynamic cursor positions for each selection', () => {
     selections: new Uint32Array([1, 5, 1, 5, 0, 2, 0, 3]),
     tokenizedLines: [],
     tokenizePath: '',
-    uid: 42,
+    uid: 0.5,
     uri: 'file:///test.txt',
     width: 300,
     x: 100,
     y: 50,
   }
 
-  expect(getCss(state)).toBe(`.EditorCursor-42-0 {
+  expect(getCss(state)).toBe(`[class~="EditorCursor-0.5-0"] {
   translate: 45px 20px;
 }
-.EditorCursor-42-1 {
+[class~="EditorCursor-0.5-1"] {
   translate: 27px 0px;
 }`)
 })

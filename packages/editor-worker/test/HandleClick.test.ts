@@ -31,7 +31,7 @@ test('updates the cursor position for an editor click', async () => {
     [
       'Viewlet.setCss',
       1,
-      `.EditorCursor-1-0 {
+      `[class~="EditorCursor-1-0"] {
   translate: 45px 20px;
 }`,
     ],
