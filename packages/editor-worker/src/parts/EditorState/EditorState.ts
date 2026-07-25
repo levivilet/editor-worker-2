@@ -5,6 +5,7 @@ export interface EditorState {
   readonly content: string
   readonly diagnostics: readonly Diagnostic[]
   readonly languageId: string
+  readonly lineNumbers: boolean
   readonly lines: readonly string[]
   readonly longestLineWidth: number
   readonly scrollBarWidth: number

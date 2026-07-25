@@ -23,6 +23,7 @@ test('updates the editor content and lines', async () => {
     content: 'first\r\nsecond\nthird',
     diagnostics: [],
     languageId: 'plaintext',
+    lineNumbers: true,
     lines: ['first', 'second', 'third'],
     longestLineWidth: 54,
     scrollBarWidth: 0,

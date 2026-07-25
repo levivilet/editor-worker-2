@@ -36,7 +36,7 @@ test('loads and renders file lines', async () => {
       42,
       [
         {
-          childCount: 2,
+          childCount: 3,
           className: 'Editor',
           type: VirtualDomElements.Div,
         },
@@ -50,6 +50,29 @@ test('loads and renders file lines', async () => {
           onInput: DomEventListenerFunctions.HandleInput,
           type: VirtualDomElements.TextArea,
           value: 'first line\nsecond line',
+        },
+        {
+          childCount: 2,
+          className: 'Gutter',
+          type: VirtualDomElements.Div,
+        },
+        {
+          childCount: 1,
+          className: 'LineNumber',
+          type: VirtualDomElements.Span,
+        },
+        {
+          text: 1,
+          type: VirtualDomElements.Text,
+        },
+        {
+          childCount: 1,
+          className: 'LineNumber',
+          type: VirtualDomElements.Span,
+        },
+        {
+          text: 2,
+          type: VirtualDomElements.Text,
         },
         {
           childCount: 2,
@@ -124,7 +147,7 @@ test('renders non-empty diagnostics inside a div', () => {
       44,
       [
         {
-          childCount: 3,
+          childCount: 4,
           className: 'Editor',
           type: VirtualDomElements.Div,
         },
@@ -138,6 +161,11 @@ test('renders non-empty diagnostics inside a div', () => {
           onInput: DomEventListenerFunctions.HandleInput,
           type: VirtualDomElements.TextArea,
           value: '',
+        },
+        {
+          childCount: 0,
+          className: 'Gutter',
+          type: VirtualDomElements.Div,
         },
         {
           childCount: 0,
@@ -214,4 +242,21 @@ test('renders later content changes incrementally', async () => {
   expect(diff2(44)).toEqual([])
   expect(dispose(44)).toEqual([])
   await SyntaxHighlightingWorker.dispose()
+})
+
+test('renders line number changes incrementally', () => {
+  const state = create(45)
+  render2(45, diff2(45))
+  EditorStates.set({
+    ...state,
+    lineNumbers: false,
+  })
+
+  const diffResult = diff2(45)
+  const commands = render2(45, diffResult)
+
+  expect(diffResult).toEqual([DiffType.RenderIncremental])
+  expect(commands).toEqual([['Viewlet.setPatches', 45, expect.any(Array)]])
+  expect(diff2(45)).toEqual([])
+  expect(dispose(45)).toEqual([])
 })

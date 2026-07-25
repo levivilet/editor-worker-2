@@ -9,6 +9,7 @@ export const create = (uid: number, uri = '', languageId = 'plaintext', tokenize
     content: '',
     diagnostics: [],
     languageId,
+    lineNumbers: true,
     lines: [],
     longestLineWidth: 0,
     scrollBarWidth: 0,
