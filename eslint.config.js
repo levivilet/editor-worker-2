@@ -4,6 +4,6 @@ export default [
   ...config.default,
   ...config.recommendedActions,
   ...config.recommendedVirtualDom,
-  ...config.recommdedTsconfig,
+  ...config.recommendedTsconfig,
 
 ]
