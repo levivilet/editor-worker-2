@@ -3,8 +3,8 @@ import { VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
 import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import { getEditorInputVirtualDom } from '../src/parts/GetEditorInputVirtualDom/GetEditorInputVirtualDom.ts'
 
-test('renders a hidden editor textarea with an input listener', () => {
-  expect(getEditorInputVirtualDom('first line\nsecond line')).toEqual([
+test('renders a hidden editor textarea with a beforeinput listener and no document copy', () => {
+  expect(getEditorInputVirtualDom()).toEqual([
     {
       childCount: 1,
       className: 'EditorInput',
@@ -12,9 +12,9 @@ test('renders a hidden editor textarea with an input listener', () => {
     },
     {
       childCount: 0,
-      onInput: DomEventListenerFunctions.HandleInput,
+      onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
       type: VirtualDomElements.TextArea,
-      value: 'first line\nsecond line',
+      value: '',
     },
   ])
 })

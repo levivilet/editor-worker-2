@@ -50,14 +50,18 @@ test('loads and renders file lines', async () => {
         },
         {
           childCount: 0,
-          onInput: DomEventListenerFunctions.HandleInput,
+          onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
           type: VirtualDomElements.TextArea,
-          value: 'first line\nsecond line',
+          value: '',
         },
         {
           childCount: 3,
           className: 'EditorContent',
           onClick: DomEventListenerFunctions.HandleClick,
+          onPointerDown: DomEventListenerFunctions.HandlePointerDown,
+          onPointerMove: DomEventListenerFunctions.HandlePointerMove,
+          onPointerUp: DomEventListenerFunctions.HandlePointerUp,
+          onWheel: DomEventListenerFunctions.HandleWheel,
           role: AriaRoles.None,
           type: VirtualDomElements.Div,
         },
@@ -183,7 +187,7 @@ test('renders non-empty diagnostics inside a div', () => {
         },
         {
           childCount: 0,
-          onInput: DomEventListenerFunctions.HandleInput,
+          onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
           type: VirtualDomElements.TextArea,
           value: '',
         },
@@ -191,6 +195,10 @@ test('renders non-empty diagnostics inside a div', () => {
           childCount: 4,
           className: 'EditorContent',
           onClick: DomEventListenerFunctions.HandleClick,
+          onPointerDown: DomEventListenerFunctions.HandlePointerDown,
+          onPointerMove: DomEventListenerFunctions.HandlePointerMove,
+          onPointerUp: DomEventListenerFunctions.HandlePointerUp,
+          onWheel: DomEventListenerFunctions.HandleWheel,
           role: AriaRoles.None,
           type: VirtualDomElements.Div,
         },
@@ -261,7 +269,7 @@ test('rejects unknown diffs', () => {
   expect(dispose(43)).toEqual([])
 })
 
-test('renders later content changes incrementally', async () => {
+test('renders later structural content changes', async () => {
   registerMockTextDocumentWorker()
   let content = 'first line'
   using _fileSystemRpc = FileSystemWorker.registerMockRpc({
@@ -283,9 +291,9 @@ test('renders later content changes incrementally', async () => {
   const diffResult = diff2(44)
   const commands = render2(44, diffResult)
 
-  expect(diffResult).toEqual([DiffType.RenderIncremental, DiffType.RenderCss])
+  expect(diffResult).toEqual([DiffType.RenderItems, DiffType.RenderCss])
   expect(commands).toEqual([
-    ['Viewlet.setPatches', 44, expect.any(Array)],
+    ['Viewlet.setDom2', 44, expect.any(Array)],
     ['Viewlet.setCss', 44, expect.any(String)],
   ])
   expect(commands[0][2]).not.toEqual([])

@@ -52,12 +52,16 @@ test('renders line numbers, lines, and cursor inside the clickable editor conten
     className: 'EditorInput',
   })
   expect(dom[2]).toMatchObject({
-    value: 'first\nsecond',
+    value: '',
   })
   expect(dom[3]).toEqual({
     childCount: 3,
     className: 'EditorContent',
     onClick: DomEventListenerFunctions.HandleClick,
+    onPointerDown: DomEventListenerFunctions.HandlePointerDown,
+    onPointerMove: DomEventListenerFunctions.HandlePointerMove,
+    onPointerUp: DomEventListenerFunctions.HandlePointerUp,
+    onWheel: DomEventListenerFunctions.HandleWheel,
     role: AriaRoles.None,
     type: VirtualDomElements.Div,
   })
@@ -92,6 +96,10 @@ test('does not render a gutter when line numbers are disabled', () => {
     childCount: 2,
     className: 'EditorContent',
     onClick: DomEventListenerFunctions.HandleClick,
+    onPointerDown: DomEventListenerFunctions.HandlePointerDown,
+    onPointerMove: DomEventListenerFunctions.HandlePointerMove,
+    onPointerUp: DomEventListenerFunctions.HandlePointerUp,
+    onWheel: DomEventListenerFunctions.HandleWheel,
     role: AriaRoles.None,
     type: VirtualDomElements.Div,
   })

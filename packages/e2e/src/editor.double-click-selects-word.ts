@@ -13,6 +13,8 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, W
   await Command.execute('Editor.handleClick', 100_000, 100_000, 2)
   await Command.execute('Editor.deleteCharacterLeft')
 
-  const textArea = Locator('.EditorInput').locator('textarea')
-  await expect(textArea).toHaveValue('first ')
+  const lines = Locator('.EditorLine')
+  await expect(lines).toHaveCount(1)
+  const firstLine = lines.nth(0)
+  await expect(firstLine).toHaveText('first ')
 }

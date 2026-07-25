@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
 import * as GetLines from '../GetLines/GetLines.ts'
 
-interface Position {
+export interface Position {
   readonly columnIndex: number
   readonly rowIndex: number
 }
@@ -47,6 +47,7 @@ interface HistoryGroup {
 
 interface TextDocument {
   desiredColumns: number[]
+  lineLengthCounts: Map<number, number>
   lines: string[]
   longestLineLength: number
   preferredEol: '\n' | '\r\n'
@@ -125,6 +126,39 @@ const computeLongestLineLength = (lines: readonly string[]): number => {
   return longestLineLength
 }
 
+const getLineLengthCounts = (lines: readonly string[]): Map<number, number> => {
+  const counts = new Map<number, number>()
+  for (const line of lines) {
+    counts.set(line.length, (counts.get(line.length) ?? 0) + 1)
+  }
+  return counts
+}
+
+const updateLineLengthCount = (counts: Map<number, number>, lineLength: number, delta: number): void => {
+  const count = (counts.get(lineLength) ?? 0) + delta
+  if (count === 0) {
+    counts.delete(lineLength)
+  } else {
+    counts.set(lineLength, count)
+  }
+}
+
+const updateLineLengths = (document: TextDocument, removedLines: readonly string[], replacementLines: readonly string[]): void => {
+  for (const line of removedLines) {
+    updateLineLengthCount(document.lineLengthCounts, line.length, -1)
+  }
+  for (const line of replacementLines) {
+    updateLineLengthCount(document.lineLengthCounts, line.length, 1)
+    document.longestLineLength = Math.max(document.longestLineLength, line.length)
+  }
+  if (!document.lineLengthCounts.has(document.longestLineLength)) {
+    document.longestLineLength = 0
+    for (const lineLength of document.lineLengthCounts.keys()) {
+      document.longestLineLength = Math.max(document.longestLineLength, lineLength)
+    }
+  }
+}
+
 const snapshot = (document: TextDocument): DocumentSnapshot => {
   return {
     canRedo: document.redoStack.length > 0,
@@ -193,7 +227,9 @@ const applySingleEdit = (document: TextDocument, edit: TextEdit): AppliedEdit =>
     insertedLines.length === 1
       ? [before + insertedLines[0] + after]
       : [before + insertedLines[0], ...insertedLines.slice(1, -1), (insertedLines.at(-1) ?? '') + after]
+  const removedLines = document.lines.slice(range.start.rowIndex, range.end.rowIndex + 1)
   document.lines.splice(range.start.rowIndex, range.end.rowIndex - range.start.rowIndex + 1, ...replacement)
+  updateLineLengths(document, removedLines, replacement)
   const insertedEnd = getInsertedEnd(range.start, insertedLines)
   return {
     forward: {
@@ -272,17 +308,17 @@ const pushHistory = (document: TextDocument, transaction: HistoryTransaction, or
 }
 
 const applyReplacements = (document: TextDocument, replacements: readonly Replacement[], origin: string): DocumentSnapshot => {
-  const beforeLines = [...document.lines]
   const beforeSelections = [...document.selections]
   const beforeStateId = document.stateId
+  const useOffsets = replacements.length > 1
   const normalized = replacements
     .map((replacement) => {
       const range = normalizeRange(document, replacement.range)
       return {
         ...replacement,
-        endOffset: positionToOffset(beforeLines, range.end),
+        endOffset: useOffsets ? positionToOffset(document.lines, range.end) : 0,
         range,
-        startOffset: positionToOffset(beforeLines, range.start),
+        startOffset: useOffsets ? positionToOffset(document.lines, range.start) : 0,
         text: normalizeInsertedText(replacement.text),
       }
     })
@@ -296,20 +332,29 @@ const applyReplacements = (document: TextDocument, replacements: readonly Replac
   const ascending = normalized.toSorted((a, b) => a.startOffset - b.startOffset || a.endOffset - b.endOffset)
   const newSelections = [...beforeSelections]
   newSelections.fill(0)
-  let cumulativeDelta = 0
-  for (const replacement of ascending) {
-    const finalOffset = replacement.startOffset + cumulativeDelta + replacement.text.length
-    const position = offsetToPosition(document.lines, finalOffset)
+  if (normalized.length === 1) {
+    const replacement = normalized[0]
+    const position = applied[0].inverse.range.end
     const index = replacement.selectionIndex * 4
     newSelections[index] = position.rowIndex
     newSelections[index + 1] = position.columnIndex
     newSelections[index + 2] = position.rowIndex
     newSelections[index + 3] = position.columnIndex
-    cumulativeDelta += replacement.text.length - (replacement.endOffset - replacement.startOffset)
+  } else {
+    let cumulativeDelta = 0
+    for (const replacement of ascending) {
+      const finalOffset = replacement.startOffset + cumulativeDelta + replacement.text.length
+      const position = offsetToPosition(document.lines, finalOffset)
+      const index = replacement.selectionIndex * 4
+      newSelections[index] = position.rowIndex
+      newSelections[index + 1] = position.columnIndex
+      newSelections[index + 2] = position.rowIndex
+      newSelections[index + 3] = position.columnIndex
+      cumulativeDelta += replacement.text.length - (replacement.endOffset - replacement.startOffset)
+    }
   }
   document.selections = newSelections
   document.desiredColumns = newSelections.filter((_value, index) => index % 4 === 3)
-  document.longestLineLength = computeLongestLineLength(document.lines)
   document.version++
   document.stateId = getNextStateId()
   pushHistory(
@@ -552,6 +597,7 @@ export const setContent = (id: number, content: string): DocumentSnapshot => {
   const stateId = getNextStateId()
   const document: TextDocument = {
     desiredColumns: [0],
+    lineLengthCounts: getLineLengthCounts(lines),
     lines: [...lines],
     longestLineLength: computeLongestLineLength(lines),
     preferredEol: getPreferredEol(content),
@@ -587,6 +633,15 @@ export const getSelectedText = (id: number): string => {
     .join('\n')
 }
 
+export const offsetAt = (id: number, rowIndex: number, columnIndex: number): number => {
+  const document = get(id)
+  return positionToOffset(document.lines, clampPosition(document, { columnIndex, rowIndex }))
+}
+
+export const positionAt = (id: number, offset: number): Position => {
+  return offsetToPosition(get(id).lines, offset)
+}
+
 export const setSelections = (id: number, selections: readonly number[]): DocumentSnapshot => {
   if (selections.length === 0 || selections.length % 4 !== 0) {
     throw new Error('Text document selections must contain one or more groups of four values')
@@ -611,6 +666,55 @@ export const deleteWordLeft = (id: number): DocumentSnapshot => deleteSelections
 export const deleteWordRight = (id: number): DocumentSnapshot => deleteSelections(id, 'right', 'word', 'deleteWordRight')
 export const deleteAllLeft = (id: number): DocumentSnapshot => deleteSelections(id, 'left', 'all', 'deleteAllLeft')
 export const deleteAllRight = (id: number): DocumentSnapshot => deleteSelections(id, 'right', 'all', 'deleteAllRight')
+
+export const deleteLine = (id: number): DocumentSnapshot => {
+  const document = get(id)
+  const ranges = selectionRanges(document).map((range, selectionIndex) => {
+    const normalized = normalizeRange(document, range)
+    const startRowIndex = normalized.start.rowIndex
+    const endRowIndex = normalized.end.rowIndex
+    const isLastLine = endRowIndex === document.lines.length - 1
+    return {
+      range: {
+        end: isLastLine ? { columnIndex: document.lines[endRowIndex].length, rowIndex: endRowIndex } : { columnIndex: 0, rowIndex: endRowIndex + 1 },
+        start:
+          isLastLine && startRowIndex > 0
+            ? { columnIndex: document.lines[startRowIndex - 1].length, rowIndex: startRowIndex - 1 }
+            : { columnIndex: 0, rowIndex: startRowIndex },
+      },
+      selectionIndex,
+      text: '',
+    }
+  })
+  return applyReplacements(document, ranges, 'deleteLine')
+}
+
+const updateIndentation = (id: number, tabSize: number, unindent: boolean): DocumentSnapshot => {
+  const document = get(id)
+  const lineIndexes = new Set<number>()
+  for (const range of selectionRanges(document)) {
+    const normalized = normalizeRange(document, range)
+    for (let { rowIndex } = normalized.start; rowIndex <= normalized.end.rowIndex; rowIndex++) {
+      lineIndexes.add(rowIndex)
+    }
+  }
+  const replacements = Array.from(lineIndexes, (rowIndex, selectionIndex) => {
+    const line = document.lines.at(rowIndex) ?? ''
+    const removeCount = unindent ? Math.min(line.match(/^ +/u)?.[0].length ?? 0, tabSize) : 0
+    return {
+      range: {
+        end: { columnIndex: removeCount, rowIndex },
+        start: { columnIndex: 0, rowIndex },
+      },
+      selectionIndex: Math.min(selectionIndex, document.selections.length / 4 - 1),
+      text: unindent ? '' : ' '.repeat(tabSize),
+    }
+  })
+  return applyReplacements(document, replacements, unindent ? 'unindent' : 'indent')
+}
+
+export const indent = (id: number, tabSize = 2): DocumentSnapshot => updateIndentation(id, tabSize, false)
+export const unindent = (id: number, tabSize = 2): DocumentSnapshot => updateIndentation(id, tabSize, true)
 
 export const insertLineBreak = (id: number): DocumentSnapshot => {
   const document = get(id)
@@ -651,6 +755,28 @@ export const cursorDocumentEnd = (id: number): DocumentSnapshot => {
   const rowIndex = document.lines.length - 1
   const columnIndex = document.lines[rowIndex].length
   return setSelections(id, [rowIndex, columnIndex, rowIndex, columnIndex])
+}
+
+export const selectDocumentStart = (id: number): DocumentSnapshot => {
+  const document = get(id)
+  const selections = [...document.selections]
+  for (let index = 0; index < selections.length; index += 4) {
+    selections[index + 2] = 0
+    selections[index + 3] = 0
+  }
+  return setSelections(id, selections)
+}
+
+export const selectDocumentEnd = (id: number): DocumentSnapshot => {
+  const document = get(id)
+  const rowIndex = document.lines.length - 1
+  const columnIndex = document.lines[rowIndex].length
+  const selections = [...document.selections]
+  for (let index = 0; index < selections.length; index += 4) {
+    selections[index + 2] = rowIndex
+    selections[index + 3] = columnIndex
+  }
+  return setSelections(id, selections)
 }
 
 export const selectAll = (id: number): DocumentSnapshot => {

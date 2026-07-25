@@ -50,6 +50,15 @@ test('types over a selection and records document state', () => {
   expect(TextDocuments.getText(id)).toBe('hello editor')
 })
 
+test('updates longest-line metadata incrementally through edits and history', () => {
+  TextDocuments.setContent(id, 'longest line\nmedium')
+  TextDocuments.setSelections(id, [0, 0, 0, 12])
+
+  expect(TextDocuments.type(id, 'tiny').longestLineLength).toBe(6)
+  expect(TextDocuments.undo(id).longestLineLength).toBe(12)
+  expect(TextDocuments.redo(id).longestLineLength).toBe(6)
+})
+
 test('pastes multiline text into multiple selections', () => {
   TextDocuments.setContent(id, 'ab\ncd')
   TextDocuments.setSelections(id, [0, 1, 0, 1, 1, 1, 1, 1])
@@ -219,4 +228,46 @@ test('marks only the current version as saved', () => {
   const changed = TextDocuments.type(id, 'x')
   expect(() => TextDocuments.markSaved(id, changed.version - 1)).toThrow('Cannot mark stale text document version as saved')
   expect(TextDocuments.markSaved(id, changed.version).modified).toBe(false)
+})
+
+test('converts between positions and offsets with clamping', () => {
+  TextDocuments.setContent(id, 'zero\none\ntwo')
+
+  expect(TextDocuments.offsetAt(id, 1, 2)).toBe(7)
+  expect(TextDocuments.offsetAt(id, 100, 100)).toBe(12)
+  expect(TextDocuments.positionAt(id, 7)).toEqual({ columnIndex: 2, rowIndex: 1 })
+  expect(TextDocuments.positionAt(id, 100)).toEqual({ columnIndex: 3, rowIndex: 2 })
+})
+
+test('deletes first, middle, last, and selected lines', () => {
+  TextDocuments.setContent(id, 'zero\none\ntwo\nthree')
+  TextDocuments.setSelections(id, [1, 2, 1, 2])
+  TextDocuments.deleteLine(id)
+  expect(TextDocuments.getText(id)).toBe('zero\ntwo\nthree')
+  TextDocuments.setSelections(id, [2, 0, 2, 0])
+  TextDocuments.deleteLine(id)
+  expect(TextDocuments.getText(id)).toBe('zero\ntwo')
+  TextDocuments.setSelections(id, [0, 0, 0, 0])
+  TextDocuments.deleteLine(id)
+  expect(TextDocuments.getText(id)).toBe('two')
+  TextDocuments.deleteLine(id)
+  expect(TextDocuments.getText(id)).toBe('')
+})
+
+test('indents and unindents selected lines', () => {
+  TextDocuments.setContent(id, 'one\n  two\nthree')
+  TextDocuments.setSelections(id, [0, 0, 2, 5])
+  TextDocuments.indent(id, 2)
+  expect(TextDocuments.getText(id)).toBe('  one\n    two\n  three')
+  TextDocuments.setSelections(id, [0, 0, 2, 7])
+  TextDocuments.unindent(id, 2)
+  expect(TextDocuments.getText(id)).toBe('one\n  two\nthree')
+})
+
+test('extends a selection to document boundaries', () => {
+  TextDocuments.setContent(id, 'one\ntwo')
+  TextDocuments.setSelections(id, [0, 2, 0, 2])
+
+  expect(TextDocuments.selectDocumentEnd(id).selections).toEqual([0, 2, 1, 3])
+  expect(TextDocuments.selectDocumentStart(id).selections).toEqual([0, 2, 0, 0])
 })

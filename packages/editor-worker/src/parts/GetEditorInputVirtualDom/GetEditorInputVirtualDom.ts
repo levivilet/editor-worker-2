@@ -8,14 +8,13 @@ const editorInputNode: VirtualDomNode = {
   type: VirtualDomElements.Div,
 }
 
-export const getEditorInputVirtualDom = (content: string): readonly VirtualDomNode[] => {
-  return [
-    editorInputNode,
-    {
-      childCount: 0,
-      onInput: DomEventListenerFunctions.HandleInput,
-      type: VirtualDomElements.TextArea,
-      value: content,
-    },
-  ]
+const textAreaNode: VirtualDomNode = {
+  childCount: 0,
+  onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
+  type: VirtualDomElements.TextArea,
+  value: '',
+}
+
+export const getEditorInputVirtualDom = (): readonly VirtualDomNode[] => {
+  return [editorInputNode, textAreaNode]
 }

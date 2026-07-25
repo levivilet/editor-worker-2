@@ -1,0 +1,24 @@
+import type { Test } from '@lvce-editor/test-with-playwright'
+
+export const name = 'editor.matrix-237-clipboard-paste'
+
+export const test: Test = async ({ ClipBoard, Command, expect, FileSystem, Locator, Main, Workspace }) => {
+  const tmpDir = await FileSystem.getTmpDir()
+  const filePath = `${tmpDir}/matrix-237.txt`
+  await FileSystem.writeFile(filePath, 'clip-11')
+  await Workspace.setPath(tmpDir)
+  await Main.openUri(filePath)
+  await ClipBoard.enableMemoryClipBoard()
+  await ClipBoard.writeText('paste-11')
+  await Command.execute('Editor.setSelections2', new Uint32Array([0, 7, 0, 7]))
+  await Command.execute('Editor.paste')
+  await Command.execute('Editor.updateDiagnostics')
+
+  const lines = Locator('.EditorLine')
+  await expect(lines).toHaveCount(1)
+  const line0 = lines.nth(0)
+  await expect(line0).toHaveText('clip-11paste-11')
+  const cursor = Locator('.EditorCursor')
+  await expect(cursor).toHaveAttribute('data-row-index', '0')
+  await expect(cursor).toHaveAttribute('data-column-index', '15')
+}
