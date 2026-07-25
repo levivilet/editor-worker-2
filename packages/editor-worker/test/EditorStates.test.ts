@@ -2,11 +2,13 @@ import { expect, test } from '@jest/globals'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 
 test('creates, isolates, and disposes editor states', () => {
+  const initialSelections = new Uint32Array([0, 0, 0, 0])
   expect(EditorStates.create(1, 'file:///one.txt')).toEqual({
     content: '',
     diagnostics: [],
     languageId: 'plaintext',
     lines: [],
+    selections: initialSelections,
     tokenizedLines: [],
     tokenizePath: '',
     uid: 1,
@@ -17,6 +19,7 @@ test('creates, isolates, and disposes editor states', () => {
     diagnostics: [],
     languageId: 'typescript',
     lines: [],
+    selections: initialSelections,
     tokenizedLines: [],
     tokenizePath: '/tokenize-typescript.js',
     uid: 2,
@@ -30,6 +33,7 @@ test('creates, isolates, and disposes editor states', () => {
     diagnostics: [],
     languageId: 'plaintext',
     lines: ['one'],
+    selections: initialSelections,
     tokenizedLines: [['one', 'Token Text']],
     tokenizePath: '',
     uid: 1,
@@ -44,15 +48,21 @@ test('creates, isolates, and disposes editor states', () => {
     content: 'one',
     languageId: 'plaintext',
     lines: ['one'],
+    selections: initialSelections,
     tokenizedLines: [['one', 'Token Text']],
     uid: 1,
     uri: 'file:///one.txt',
   })
-
   EditorStates.dispose(1)
 
   expect(() => EditorStates.get(1)).toThrow(new Error('Editor state not found: 1'))
   expect(EditorStates.getRendered(1)).toBeUndefined()
-  expect(EditorStates.get(2)).toMatchObject({ languageId: 'typescript', lines: [], uid: 2, uri: 'file:///two.ts' })
+  expect(EditorStates.get(2)).toMatchObject({
+    languageId: 'typescript',
+    lines: [],
+    selections: initialSelections,
+    uid: 2,
+    uri: 'file:///two.ts',
+  })
   EditorStates.dispose(2)
 })

@@ -8,6 +8,7 @@ test('renders the input and lines under one editor root', () => {
     diagnostics: [],
     languageId: 'plaintext',
     lines: ['first line'],
+    selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [['first line', 'Token Text']],
     tokenizePath: '',
     uid: 1,

@@ -34,6 +34,7 @@ test('loads file content into editor lines', async () => {
     diagnostics: [],
     languageId: 'typescript',
     lines: ['first', 'second', 'third'],
+    selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [
       ['first', 'Token Keyword'],
       ['second', 'Token String'],

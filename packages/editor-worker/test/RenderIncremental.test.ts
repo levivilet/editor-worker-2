@@ -7,6 +7,7 @@ test('returns patches for changed lines', () => {
     diagnostics: [],
     languageId: 'plaintext',
     lines: ['first line'],
+    selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [['first line', 'Token Text']],
     tokenizePath: '',
     uid: 42,
