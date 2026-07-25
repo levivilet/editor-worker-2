@@ -5,6 +5,7 @@ export interface EditorState {
   readonly diagnostics: readonly Diagnostic[]
   readonly languageId: string
   readonly lines: readonly string[]
+  readonly selections: Uint32Array
   readonly tokenizedLines: readonly (readonly string[])[]
   readonly tokenizePath: string
   readonly uid: number

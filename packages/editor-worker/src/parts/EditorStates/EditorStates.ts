@@ -9,6 +9,7 @@ export const create = (uid: number, uri = '', languageId = 'plaintext', tokenize
     diagnostics: [],
     languageId,
     lines: [],
+    selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [],
     tokenizePath,
     uid,

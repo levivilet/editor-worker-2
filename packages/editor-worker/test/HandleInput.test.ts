@@ -23,6 +23,7 @@ test('updates the editor content and lines', async () => {
     diagnostics: [],
     languageId: 'plaintext',
     lines: ['first', 'second', 'third'],
+    selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [
       ['first', 'Token Keyword'],
       ['second', 'Token String'],

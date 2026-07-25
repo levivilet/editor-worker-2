@@ -5,6 +5,10 @@ test('contains only the minimal editor integration commands', () => {
   expect(Object.keys(commandMap)).toEqual([
     'Editor.create',
     'Editor.create2',
+    'Editor.deleteCharacterLeft',
+    'Editor.deleteCharacterRight',
+    'Editor.deleteWordLeft',
+    'Editor.deleteWordRight',
     'Editor.diff2',
     'Editor.dispose',
     'Editor.getCommandIds',
@@ -20,7 +24,14 @@ test('contains only the minimal editor integration commands', () => {
     'Font.ensure',
     'Initialize.initialize',
   ])
-  expect(commandMap['Editor.getCommandIds']()).toEqual(['handleInput', 'updateDiagnostics'])
+  expect(commandMap['Editor.getCommandIds']()).toEqual([
+    'deleteCharacterLeft',
+    'deleteCharacterRight',
+    'deleteWordLeft',
+    'deleteWordRight',
+    'handleInput',
+    'updateDiagnostics',
+  ])
   expect(commandMap['Editor.getKeyBindings']()).toEqual([])
   expect(commandMap['Editor.getQuickPickMenuEntries']()).toEqual([])
   expect(commandMap['Editor.handleInput']).toEqual(expect.any(Function))
@@ -32,7 +43,7 @@ test('contains only the minimal editor integration commands', () => {
     },
   ])
   expect(commandMap['Editor.setDiagnostics']).toEqual(expect.any(Function))
-  expect(commandMap['Editor.setSelections2']()).toBeUndefined()
+  expect(commandMap['Editor.setSelections2']).toEqual(expect.any(Function))
   expect(commandMap['Editor.updateDiagnostics']()).toBeUndefined()
   expect(commandMap['Font.ensure']()).toBeUndefined()
   expect(commandMap['Initialize.initialize']()).toBeUndefined()
