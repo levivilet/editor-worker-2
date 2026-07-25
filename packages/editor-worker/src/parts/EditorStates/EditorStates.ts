@@ -2,9 +2,11 @@ import type { EditorState } from '../EditorState/EditorState.ts'
 
 const states = new Map<number, EditorState>()
 
-export const create = (uid: number): EditorState => {
+export const create = (uid: number, uri = ''): EditorState => {
   const state: EditorState = {
+    lines: [],
     uid,
+    uri,
   }
   states.set(uid, state)
   return state
@@ -20,4 +22,9 @@ export const get = (uid: number): EditorState => {
     throw new Error(`Editor state not found: ${uid}`)
   }
   return state
+}
+
+export const set = (state: EditorState): void => {
+  const { uid } = state
+  states.set(uid, state)
 }
