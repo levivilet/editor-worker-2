@@ -4,27 +4,24 @@ import * as TextDocumentCache from '../src/parts/TextDocumentCache/TextDocumentC
 class TestCache {
   readonly entries = new Map<string, Response>()
 
-  async delete(request: RequestInfo | URL): Promise<boolean> {
+  private toUrl(request: string): string {
+    return new URL(request).href
+  }
+
+  async delete(request: string): Promise<boolean> {
     return this.entries.delete(this.toUrl(request))
   }
 
-  async keys(): Promise<readonly Request[]> {
-    return [...this.entries.keys()].map((key) => new Request(key))
+  async keys(): Promise<readonly string[]> {
+    return this.entries.keys().toArray()
   }
 
-  async match(request: RequestInfo | URL): Promise<Response | undefined> {
+  async match(request: string): Promise<Response | undefined> {
     return this.entries.get(this.toUrl(request))?.clone()
   }
 
-  async put(request: RequestInfo | URL, response: Response): Promise<void> {
+  async put(request: string, response: Readonly<{ clone: () => Response }>): Promise<void> {
     this.entries.set(this.toUrl(request), response.clone())
-  }
-
-  private toUrl(request: RequestInfo | URL): string {
-    if (request instanceof Request) {
-      return request.url
-    }
-    return new URL(request.toString()).href
   }
 }
 
@@ -84,7 +81,7 @@ test('keeps content that is exactly 100 kB', async () => {
 
 test('evicts the least recently used entry above 100 entries', async () => {
   for (let index = 0; index < 100; index++) {
-    await TextDocumentCache.set(`file:///${index}.txt`, `hash-${index}`, `${index}`)
+    await TextDocumentCache.set(`file:///${index}.txt`, `hash-${index}`, String(index))
   }
   await TextDocumentCache.get('file:///0.txt', 'hash-0')
   await TextDocumentCache.set('file:///100.txt', 'hash-100', '100')

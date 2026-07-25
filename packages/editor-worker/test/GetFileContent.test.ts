@@ -1,15 +1,14 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { FileSystemWorker } from '@lvce-editor/rpc-registry'
+import * as GetFileContent from '../src/parts/GetFileContent/GetFileContent.ts'
 
 const cacheGet = jest.fn<(uri: string, hash: string) => Promise<string | undefined>>()
 const cacheSet = jest.fn<(uri: string, hash: string, content: string) => Promise<void>>()
 
-jest.unstable_mockModule('../src/parts/TextDocumentCache/TextDocumentCache.ts', () => ({
+const cache = {
   get: cacheGet,
   set: cacheSet,
-}))
-
-const GetFileContent = await import('../src/parts/GetFileContent/GetFileContent.ts')
+}
 
 beforeEach(() => {
   jest.resetAllMocks()
@@ -20,7 +19,7 @@ test('reads content directly when caching is disabled', async () => {
     'FileSystem.readFile': async (): Promise<string> => 'file content',
   })
 
-  await expect(GetFileContent.getFileContent('file:///test.txt', false)).resolves.toBe('file content')
+  await expect(GetFileContent.getFileContent('file:///test.txt', false, cache)).resolves.toBe('file content')
   expect(fileSystemRpc.invocations).toEqual([['FileSystem.readFile', 'file:///test.txt']])
   expect(cacheGet).not.toHaveBeenCalled()
   expect(cacheSet).not.toHaveBeenCalled()
@@ -32,7 +31,7 @@ test('returns cached content when the file hash matches', async () => {
     'FileSystem.getFileHash': async (): Promise<string> => 'hash-1',
   })
 
-  await expect(GetFileContent.getFileContent('file:///test.txt', true)).resolves.toBe('cached content')
+  await expect(GetFileContent.getFileContent('file:///test.txt', true, cache)).resolves.toBe('cached content')
   expect(fileSystemRpc.invocations).toEqual([['FileSystem.getFileHash', 'file:///test.txt']])
   expect(cacheGet).toHaveBeenCalledWith('file:///test.txt', 'hash-1')
   expect(cacheSet).not.toHaveBeenCalled()
@@ -45,7 +44,7 @@ test('reads and caches content on a cache miss', async () => {
     'FileSystem.readFile': async (): Promise<string> => 'file content',
   })
 
-  await expect(GetFileContent.getFileContent('file:///test.txt', true)).resolves.toBe('file content')
+  await expect(GetFileContent.getFileContent('file:///test.txt', true, cache)).resolves.toBe('file content')
   expect(fileSystemRpc.invocations).toEqual([
     ['FileSystem.getFileHash', 'file:///test.txt'],
     ['FileSystem.readFile', 'file:///test.txt'],
@@ -61,7 +60,7 @@ test('falls back to reading when hashing is unavailable', async () => {
     'FileSystem.readFile': async (): Promise<string> => 'file content',
   })
 
-  await expect(GetFileContent.getFileContent('file:///test.txt', true)).resolves.toBe('file content')
+  await expect(GetFileContent.getFileContent('file:///test.txt', true, cache)).resolves.toBe('file content')
   expect(fileSystemRpc.invocations).toEqual([
     ['FileSystem.getFileHash', 'file:///test.txt'],
     ['FileSystem.readFile', 'file:///test.txt'],
@@ -77,7 +76,7 @@ test('ignores Cache Storage read and write errors', async () => {
     'FileSystem.readFile': async (): Promise<string> => 'file content',
   })
 
-  await expect(GetFileContent.getFileContent('file:///test.txt', true)).resolves.toBe('file content')
+  await expect(GetFileContent.getFileContent('file:///test.txt', true, cache)).resolves.toBe('file content')
   expect(fileSystemRpc.invocations).toEqual([
     ['FileSystem.getFileHash', 'file:///test.txt'],
     ['FileSystem.readFile', 'file:///test.txt'],

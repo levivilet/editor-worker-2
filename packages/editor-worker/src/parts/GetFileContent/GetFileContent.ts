@@ -1,7 +1,12 @@
 import { FileSystemWorker } from '@lvce-editor/rpc-registry'
 import * as TextDocumentCache from '../TextDocumentCache/TextDocumentCache.ts'
 
-export const getFileContent = async (uri: string, useCache: boolean): Promise<string> => {
+interface Cache {
+  readonly get: typeof TextDocumentCache.get
+  readonly set: typeof TextDocumentCache.set
+}
+
+export const getFileContent = async (uri: string, useCache: boolean, cache: Cache = TextDocumentCache): Promise<string> => {
   if (!useCache) {
     return FileSystemWorker.readFile(uri)
   }
@@ -12,7 +17,7 @@ export const getFileContent = async (uri: string, useCache: boolean): Promise<st
     return FileSystemWorker.readFile(uri)
   }
   try {
-    const cachedContent = await TextDocumentCache.get(uri, hash)
+    const cachedContent = await cache.get(uri, hash)
     if (cachedContent !== undefined) {
       return cachedContent
     }
@@ -21,7 +26,7 @@ export const getFileContent = async (uri: string, useCache: boolean): Promise<st
   }
   const content = await FileSystemWorker.readFile(uri)
   try {
-    await TextDocumentCache.set(uri, hash, content)
+    await cache.set(uri, hash, content)
   } catch {
     // Cache Storage is an optional optimization.
   }

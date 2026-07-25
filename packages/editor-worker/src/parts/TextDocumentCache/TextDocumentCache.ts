@@ -46,8 +46,8 @@ export const set = async (uri: string, hash: string, content: string): Promise<v
   const key = getCacheKey(uri)
   const response = new Response(content, {
     headers: {
-      [contentHashHeader]: hash,
       'content-type': 'text/plain; charset=utf-8',
+      [contentHashHeader]: hash,
     },
   })
   await cache.delete(key)
