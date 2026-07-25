@@ -2,10 +2,10 @@ import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as GetClickPosition from '../GetClickPosition/GetClickPosition.ts'
 import * as GetWordSelection from '../GetWordSelection/GetWordSelection.ts'
 
-export const handleClick = (uid: number, eventX: number, eventY: number, clickCount = 1): void => {
+export const handleClick = async (uid: number, eventX: number, eventY: number, clickCount = 1): Promise<void> => {
   const state = EditorStates.get(uid)
   const { lines } = state
-  const position = GetClickPosition.getClickPosition(state, eventX, eventY)
+  const position = await GetClickPosition.getClickPosition(state, eventX, eventY)
   const { columnIndex, rowIndex } = position
   const selections =
     clickCount === 2

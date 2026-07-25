@@ -1,4 +1,5 @@
 import { expect, test } from '@jest/globals'
+import { TextMeasurementWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../src/parts/EditorState/EditorState.ts'
 import { getClickPosition } from '../src/parts/GetClickPosition/GetClickPosition.ts'
 
@@ -26,27 +27,62 @@ const createState = (): EditorState => ({
   y: 50,
 })
 
-test('returns the closest cursor position for editor coordinates', () => {
-  expect(getClickPosition(createState(), 145, 75)).toEqual({
-    columnIndex: 5,
+test('asks the text measurement worker for the closest cursor position', async () => {
+  using textMeasurementRpc = TextMeasurementWorker.registerMockRpc({
+    'TextMeasurement.getPosition'(): number {
+      return 4
+    },
+  })
+
+  await expect(getClickPosition(createState(), 145, 75)).resolves.toEqual({
+    columnIndex: 4,
+    rowIndex: 1,
+  })
+  expect(textMeasurementRpc.invocations).toEqual([['TextMeasurement.getPosition', 'second', 400, 15, 'Fira Code', 0.5, true, 9, 2, 45]])
+})
+
+test('clamps measured positions to the line boundaries', async () => {
+  using _textMeasurementRpc = TextMeasurementWorker.registerMockRpc({
+    'TextMeasurement.getPosition'(): number {
+      return 100
+    },
+  })
+
+  await expect(getClickPosition(createState(), 1000, 75)).resolves.toEqual({
+    columnIndex: 6,
     rowIndex: 1,
   })
 })
 
-test('clamps clicks to the document boundaries', () => {
-  const state = createState()
-  expect(getClickPosition(state, 0, 0)).toEqual({
+test('clamps coordinates before measuring text', async () => {
+  using textMeasurementRpc = TextMeasurementWorker.registerMockRpc({
+    'TextMeasurement.getPosition'(): number {
+      return 0
+    },
+  })
+
+  await expect(getClickPosition(createState(), 0, 0)).resolves.toEqual({
     columnIndex: 0,
     rowIndex: 0,
   })
-  expect(getClickPosition(state, 1000, 1000)).toEqual({
+  expect(textMeasurementRpc.invocations).toEqual([['TextMeasurement.getPosition', 'first line', 400, 15, 'Fira Code', 0.5, true, 9, 2, 0]])
+})
+
+test('clamps clicks below the document to the last line', async () => {
+  using _textMeasurementRpc = TextMeasurementWorker.registerMockRpc({
+    'TextMeasurement.getPosition'(): number {
+      return 0
+    },
+  })
+
+  await expect(getClickPosition(createState(), 1000, 1000)).resolves.toEqual({
     columnIndex: 0,
     rowIndex: 2,
   })
 })
 
-test('returns the document start before content is loaded', () => {
-  expect(getClickPosition({ ...createState(), lines: [] }, 145, 75)).toEqual({
+test('returns the document start before content is loaded', async () => {
+  await expect(getClickPosition({ ...createState(), lines: [] }, 145, 75)).resolves.toEqual({
     columnIndex: 0,
     rowIndex: 0,
   })
