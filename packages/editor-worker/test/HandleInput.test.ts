@@ -14,15 +14,18 @@ test('updates the editor content and lines', async () => {
       ['third', 'Token Comment'],
     ],
   } as any)
-  create(1, 'file:///test.txt')
+  create(1, 'file:///test.txt', 0, 0, 100)
 
   await handleInput(1, 'first\r\nsecond\nthird')
 
   expect(EditorStates.get(1)).toEqual({
+    columnWidth: 9,
     content: 'first\r\nsecond\nthird',
     diagnostics: [],
     languageId: 'plaintext',
     lines: ['first', 'second', 'third'],
+    longestLineWidth: 54,
+    scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [
       ['first', 'Token Keyword'],
@@ -32,6 +35,7 @@ test('updates the editor content and lines', async () => {
     tokenizePath: '',
     uid: 1,
     uri: 'file:///test.txt',
+    width: 100,
   })
   dispose(1)
   await SyntaxHighlightingWorker.dispose()

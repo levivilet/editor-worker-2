@@ -14,8 +14,10 @@ export const test: Test = async ({ expect, FileSystem, Locator, Main, Workspace 
   const firstLine = lines.nth(0)
   const secondLine = lines.nth(1)
   const thirdLine = lines.nth(2)
+  const horizontalScrollBar = Locator('.ScrollBarHorizontal')
   await expect(lines).toHaveCount(3)
   await expect(firstLine).toHaveText('first line')
   await expect(secondLine).toHaveText('second line')
   await expect(thirdLine).toHaveText('third line')
+  await expect(horizontalScrollBar).toHaveCount(0)
 }

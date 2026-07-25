@@ -4,15 +4,19 @@ import { getEditorVirtualDom } from '../src/parts/GetEditorVirtualDom/GetEditorV
 
 test('renders the input and lines under one editor root', () => {
   const dom = getEditorVirtualDom({
+    columnWidth: 9,
     content: 'first line',
     diagnostics: [],
     languageId: 'plaintext',
     lines: ['first line'],
+    longestLineWidth: 90,
+    scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [['first line', 'Token Text']],
     tokenizePath: '',
     uid: 1,
     uri: 'file:///test.txt',
+    width: 100,
   })
 
   expect(dom[0]).toEqual({

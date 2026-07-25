@@ -3,15 +3,19 @@ import { renderIncremental } from '../src/parts/RenderIncremental/RenderIncremen
 
 test('returns patches for changed lines', () => {
   const oldState = {
+    columnWidth: 9,
     content: 'first line',
     diagnostics: [],
     languageId: 'plaintext',
     lines: ['first line'],
+    longestLineWidth: 90,
+    scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [['first line', 'Token Text']],
     tokenizePath: '',
     uid: 42,
     uri: 'file:///test.txt',
+    width: 100,
   }
   const newState = {
     ...oldState,

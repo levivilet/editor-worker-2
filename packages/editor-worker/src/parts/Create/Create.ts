@@ -6,12 +6,12 @@ export const create = (
   uri = '',
   _x = 0,
   _y = 0,
-  _width = 0,
+  width = 0,
   _height = 0,
   _platform = 0,
   _assetDir = '',
   languageId = 'plaintext',
   tokenizePath = '',
 ): EditorState => {
-  return EditorStates.create(uid, uri, languageId, tokenizePath)
+  return EditorStates.create(uid, uri, languageId, tokenizePath, width)
 }
