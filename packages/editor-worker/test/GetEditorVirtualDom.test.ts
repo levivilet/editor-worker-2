@@ -1,6 +1,7 @@
 import { expect, test } from '@jest/globals'
-import { VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
+import { AriaRoles, VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
 import type { EditorState } from '../src/parts/EditorState/EditorState.ts'
+import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import { getEditorVirtualDom } from '../src/parts/GetEditorVirtualDom/GetEditorVirtualDom.ts'
 
 const createState = (lineNumbers: boolean): EditorState => {
@@ -8,10 +9,12 @@ const createState = (lineNumbers: boolean): EditorState => {
     columnWidth: 9,
     content: 'first\nsecond',
     diagnostics: [],
+    height: 200,
     languageId: 'plaintext',
     lineNumbers,
     lines: ['first', 'second'],
     longestLineWidth: 90,
+    rowHeight: 20,
     scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [
@@ -22,14 +25,16 @@ const createState = (lineNumbers: boolean): EditorState => {
     uid: 1,
     uri: 'file:///test.txt',
     width: 100,
+    x: 0,
+    y: 0,
   }
 }
 
-test('renders line numbers in a separate gutter from editor lines', () => {
+test('renders line numbers, lines, and cursor inside the clickable editor content', () => {
   const dom = getEditorVirtualDom(createState(true))
 
   expect(dom[0]).toEqual({
-    childCount: 3,
+    childCount: 2,
     className: 'Editor',
     type: VirtualDomElements.Div,
   })
@@ -37,13 +42,28 @@ test('renders line numbers in a separate gutter from editor lines', () => {
     className: 'EditorInput',
   })
   expect(dom[3]).toEqual({
+    childCount: 3,
+    className: 'EditorContent',
+    onClick: DomEventListenerFunctions.HandleClick,
+    role: AriaRoles.None,
+    type: VirtualDomElements.Div,
+  })
+  expect(dom[4]).toEqual({
     childCount: 2,
     className: 'Gutter',
     type: VirtualDomElements.Div,
   })
-  expect(dom[8]).toEqual({
+  expect(dom[9]).toEqual({
     childCount: 2,
     className: 'EditorLines',
+    type: VirtualDomElements.Div,
+  })
+  expect(dom.at(-1)).toEqual({
+    childCount: 0,
+    className: 'EditorCursor',
+    'data-columnIndex': '0',
+    'data-rowIndex': '0',
+    translate: '0px 0px',
     type: VirtualDomElements.Div,
   })
 })
@@ -57,6 +77,13 @@ test('does not render a gutter when line numbers are disabled', () => {
     type: VirtualDomElements.Div,
   })
   expect(dom[3]).toEqual({
+    childCount: 2,
+    className: 'EditorContent',
+    onClick: DomEventListenerFunctions.HandleClick,
+    role: AriaRoles.None,
+    type: VirtualDomElements.Div,
+  })
+  expect(dom[4]).toEqual({
     childCount: 2,
     className: 'EditorLines',
     type: VirtualDomElements.Div,

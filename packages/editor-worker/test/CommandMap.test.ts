@@ -15,6 +15,7 @@ test('contains only the minimal editor integration commands', () => {
     'Editor.getCommandIds',
     'Editor.getKeyBindings',
     'Editor.getQuickPickMenuEntries',
+    'Editor.handleClick',
     'Editor.handleInput',
     'Editor.loadContent',
     'Editor.render2',
@@ -30,6 +31,7 @@ test('contains only the minimal editor integration commands', () => {
     'deleteCharacterRight',
     'deleteWordLeft',
     'deleteWordRight',
+    'handleClick',
     'handleInput',
     'updateDiagnostics',
   ])
@@ -41,9 +43,14 @@ test('contains only the minimal editor integration commands', () => {
     },
   ])
   expect(commandMap['Editor.getQuickPickMenuEntries']()).toEqual([])
+  expect(commandMap['Editor.handleClick']).toEqual(expect.any(Function))
   expect(commandMap['Editor.handleInput']).toEqual(expect.any(Function))
   expect(commandMap['Editor.loadContent']).toEqual(expect.any(Function))
   expect(commandMap['Editor.renderEventListeners']()).toEqual([
+    {
+      name: 3,
+      params: ['handleClick', 'event.clientX', 'event.clientY'],
+    },
     {
       name: 1,
       params: ['handleInput', 'event.target.value'],

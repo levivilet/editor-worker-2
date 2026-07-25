@@ -22,10 +22,12 @@ test('updates the editor content and lines', async () => {
     columnWidth: 9,
     content: 'first\r\nsecond\nthird',
     diagnostics: [],
+    height: 0,
     languageId: 'plaintext',
     lineNumbers: true,
     lines: ['first', 'second', 'third'],
     longestLineWidth: 54,
+    rowHeight: 20,
     scrollBarWidth: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tokenizedLines: [
@@ -37,6 +39,8 @@ test('updates the editor content and lines', async () => {
     uid: 1,
     uri: 'file:///test.txt',
     width: 100,
+    x: 0,
+    y: 0,
   })
   dispose(1)
   await SyntaxHighlightingWorker.dispose()

@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
 import { FileSystemWorker, SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
-import { mergeClassNames, VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
+import { AriaRoles, mergeClassNames, VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
 import * as ClassNames from '../src/parts/ClassNames/ClassNames.ts'
 import { create } from '../src/parts/Create/Create.ts'
 import { diff2 } from '../src/parts/Diff2/Diff2.ts'
@@ -36,7 +36,7 @@ test('loads and renders file lines', async () => {
       42,
       [
         {
-          childCount: 3,
+          childCount: 2,
           className: 'Editor',
           type: VirtualDomElements.Div,
         },
@@ -50,6 +50,13 @@ test('loads and renders file lines', async () => {
           onInput: DomEventListenerFunctions.HandleInput,
           type: VirtualDomElements.TextArea,
           value: 'first line\nsecond line',
+        },
+        {
+          childCount: 3,
+          className: 'EditorContent',
+          onClick: DomEventListenerFunctions.HandleClick,
+          role: AriaRoles.None,
+          type: VirtualDomElements.Div,
         },
         {
           childCount: 2,
@@ -116,6 +123,14 @@ test('loads and renders file lines', async () => {
           text: 'second line',
           type: VirtualDomElements.Text,
         },
+        {
+          childCount: 0,
+          className: 'EditorCursor',
+          'data-columnIndex': '0',
+          'data-rowIndex': '0',
+          translate: '0px 0px',
+          type: VirtualDomElements.Div,
+        },
       ],
     ],
   ])
@@ -147,7 +162,7 @@ test('renders non-empty diagnostics inside a div', () => {
       44,
       [
         {
-          childCount: 4,
+          childCount: 2,
           className: 'Editor',
           type: VirtualDomElements.Div,
         },
@@ -161,6 +176,13 @@ test('renders non-empty diagnostics inside a div', () => {
           onInput: DomEventListenerFunctions.HandleInput,
           type: VirtualDomElements.TextArea,
           value: '',
+        },
+        {
+          childCount: 4,
+          className: 'EditorContent',
+          onClick: DomEventListenerFunctions.HandleClick,
+          role: AriaRoles.None,
+          type: VirtualDomElements.Div,
         },
         {
           childCount: 0,
@@ -185,6 +207,14 @@ test('renders non-empty diagnostics inside a div', () => {
           top: 6,
           type: VirtualDomElements.Div,
           width: 12,
+        },
+        {
+          childCount: 0,
+          className: 'EditorCursor',
+          'data-columnIndex': '0',
+          'data-rowIndex': '0',
+          translate: '0px 0px',
+          type: VirtualDomElements.Div,
         },
       ],
     ],

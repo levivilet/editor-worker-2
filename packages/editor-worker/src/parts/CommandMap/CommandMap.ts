@@ -6,6 +6,7 @@ import * as DeleteWordRight from '../DeleteWordRight/DeleteWordRight.ts'
 import * as Diff2 from '../Diff2/Diff2.ts'
 import * as Dispose from '../Dispose/Dispose.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
+import * as HandleClick from '../HandleClick/HandleClick.ts'
 import * as HandleInput from '../HandleInput/HandleInput.ts'
 import * as LoadContent from '../LoadContent/LoadContent.ts'
 import * as Render2 from '../Render2/Render2.ts'
@@ -20,6 +21,7 @@ const getCommandIds = (): readonly string[] => [
   'deleteCharacterRight',
   'deleteWordLeft',
   'deleteWordRight',
+  'handleClick',
   'handleInput',
   'updateDiagnostics',
 ]
@@ -38,6 +40,7 @@ export const commandMap = {
   'Editor.getCommandIds': getCommandIds,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
   'Editor.getQuickPickMenuEntries': emptyArray,
+  'Editor.handleClick': HandleClick.handleClick,
   'Editor.handleInput': HandleInput.handleInput,
   'Editor.loadContent': LoadContent.loadContent,
   'Editor.render2': Render2.render2,
