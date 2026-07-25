@@ -5,23 +5,16 @@
       "project": ["*.js"]
     },
     "packages/build": {
-      "project": ["src/**/*.js", "src/**/*.ts"],
-      "ignoreDependencies": ["@lvce-editor/verror", "esbuild"]
-    },
-    "packages/e2e": {
-      "entry": ["src/**/*.ts"],
+      "entry": ["src/build.ts", "src/computeNodeModulesCacheKey.ts", "src/watch.ts"],
       "project": ["src/**/*.ts"]
     },
-    "packages/memory": {
-      "project": ["src/**/*.ts"],
-      "ignoreDependencies": ["playwright"]
-    },
-    "packages/about-view": {
-      "entry": ["test/**/*.test.ts"],
+    "packages/editor-worker": {
+      "entry": ["src/editorWorkerMain.ts", "test/**/*.test.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
-    "packages/server": {
-      "project": ["src/**/*.js"]
+    "packages/text-document-worker": {
+      "entry": ["src/textDocumentWorkerMain.ts", "test/**/*.test.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"]
     }
   }
 }
