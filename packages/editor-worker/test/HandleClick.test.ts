@@ -25,8 +25,17 @@ test('updates the cursor position for an editor click', async () => {
 
   expect(EditorStates.get(1).selections).toEqual(new Uint32Array([1, 4, 1, 4]))
   const diffResult = diff2(1)
-  expect(diffResult).toEqual([DiffType.RenderIncremental])
-  expect(render2(1, diffResult)).toEqual([['Viewlet.setPatches', 1, expect.any(Array)]])
+  expect(diffResult).toEqual([DiffType.RenderIncremental, DiffType.RenderCss])
+  expect(render2(1, diffResult)).toEqual([
+    ['Viewlet.setPatches', 1, expect.any(Array)],
+    [
+      'Viewlet.setCss',
+      1,
+      `[class~="EditorCursor-1-0"] {
+  translate: 36px 20px;
+}`,
+    ],
+  ])
   dispose(1)
 })
 

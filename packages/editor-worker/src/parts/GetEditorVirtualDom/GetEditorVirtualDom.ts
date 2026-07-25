@@ -11,11 +11,12 @@ import * as GetLinesVirtualDom from '../GetLinesVirtualDom/GetLinesVirtualDom.ts
 import * as GetScrollBarVirtualDom from '../GetScrollBarVirtualDom/GetScrollBarVirtualDom.ts'
 
 export const getEditorVirtualDom = (state: EditorState): readonly VirtualDomNode[] => {
-  const { diagnostics, lineNumbers, lines, scrollBarWidth, tokenizedLines } = state
+  const { diagnostics, lineNumbers, lines, scrollBarWidth, selections, tokenizedLines } = state
   const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(diagnostics)
   const findWidgetDom = GetFindWidgetVirtualDom.getFindWidgetVirtualDom(state)
   const lineNumbersDom = lineNumbers ? GetLineNumbersVirtualDom.getLineNumbersVirtualDom(lines) : []
   const scrollBarDom = GetScrollBarVirtualDom.getScrollBarVirtualDom(scrollBarWidth)
+  const cursorCount = selections.length / 4
   return [
     {
       childCount: 2 + (findWidgetDom.length > 0 ? 1 : 0),
@@ -24,7 +25,7 @@ export const getEditorVirtualDom = (state: EditorState): readonly VirtualDomNode
     },
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(lines.join('\n')),
     {
-      childCount: 2 + (lineNumbers ? 1 : 0) + (diagnosticsDom.length > 0 ? 1 : 0) + (scrollBarDom.length > 0 ? 1 : 0),
+      childCount: 1 + cursorCount + (lineNumbers ? 1 : 0) + (diagnosticsDom.length > 0 ? 1 : 0) + (scrollBarDom.length > 0 ? 1 : 0),
       className: ClassNames.EditorContent,
       onClick: DomEventListenerFunctions.HandleClick,
       role: AriaRoles.None,

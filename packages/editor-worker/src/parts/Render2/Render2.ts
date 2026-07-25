@@ -1,11 +1,14 @@
 import type { EditorState } from '../EditorState/EditorState.ts'
 import * as DiffType from '../DiffType/DiffType.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
+import * as RenderCss from '../RenderCss/RenderCss.ts'
 import * as RenderIncremental from '../RenderIncremental/RenderIncremental.ts'
 import * as RenderItems from '../RenderItems/RenderItems.ts'
 
 const render = (diff: number, oldState: EditorState, newState: EditorState): readonly unknown[] => {
   switch (diff) {
+    case DiffType.RenderCss:
+      return RenderCss.renderCss(newState)
     case DiffType.RenderIncremental:
       return RenderIncremental.renderIncremental(oldState, newState)
     case DiffType.RenderItems:

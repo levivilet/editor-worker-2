@@ -1,9 +1,9 @@
 import { expect, test } from '@jest/globals'
-import { VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
+import { mergeClassNames, VirtualDomElements } from '@lvce-editor/virtual-dom-worker'
 import type { EditorState } from '../src/parts/EditorState/EditorState.ts'
 import { getCursorVirtualDom } from '../src/parts/GetCursorVirtualDom/GetCursorVirtualDom.ts'
 
-test('renders the cursor in its own div at the selected position', () => {
+test('renders each cursor with its own class and without inline styles', () => {
   const state: EditorState = {
     columnWidth: 9,
     diagnostics: [],
@@ -18,7 +18,7 @@ test('renders the cursor in its own div at the selected position', () => {
     minLineY: 0,
     rowHeight: 20,
     scrollBarWidth: 0,
-    selections: new Uint32Array([1, 5, 1, 5]),
+    selections: new Uint32Array([1, 5, 1, 5, 0, 2, 0, 3]),
     tokenizedLines: [],
     tokenizePath: '',
     uid: 1,
@@ -32,10 +32,16 @@ test('renders the cursor in its own div at the selected position', () => {
   expect(getCursorVirtualDom(state)).toEqual([
     {
       childCount: 0,
-      className: 'EditorCursor',
+      className: mergeClassNames('EditorCursor', 'EditorCursor-1-0'),
       'data-columnIndex': '5',
       'data-rowIndex': '1',
-      translate: '45px 20px',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 0,
+      className: mergeClassNames('EditorCursor', 'EditorCursor-1-1'),
+      'data-columnIndex': '3',
+      'data-rowIndex': '0',
       type: VirtualDomElements.Div,
     },
   ])
