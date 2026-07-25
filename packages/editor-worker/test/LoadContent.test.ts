@@ -30,6 +30,7 @@ test('loads file content into editor lines', async () => {
   await loadContent(1)
 
   expect(EditorStates.get(1)).toEqual({
+    content: 'first\r\nsecond\nthird',
     diagnostics: [],
     languageId: 'typescript',
     lines: ['first', 'second', 'third'],

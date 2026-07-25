@@ -3,6 +3,7 @@ import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 
 test('creates, isolates, and disposes editor states', () => {
   expect(EditorStates.create(1, 'file:///one.txt')).toEqual({
+    content: '',
     diagnostics: [],
     languageId: 'plaintext',
     lines: [],
@@ -12,6 +13,7 @@ test('creates, isolates, and disposes editor states', () => {
     uri: 'file:///one.txt',
   })
   expect(EditorStates.create(2, 'file:///two.ts', 'typescript', '/tokenize-typescript.js')).toEqual({
+    content: '',
     diagnostics: [],
     languageId: 'typescript',
     lines: [],
@@ -24,6 +26,7 @@ test('creates, isolates, and disposes editor states', () => {
   expect(EditorStates.get(2)).toMatchObject({ languageId: 'typescript', uid: 2 })
 
   EditorStates.set({
+    content: 'one',
     diagnostics: [],
     languageId: 'plaintext',
     lines: ['one'],
@@ -32,12 +35,13 @@ test('creates, isolates, and disposes editor states', () => {
     uid: 1,
     uri: 'file:///one.txt',
   })
-  expect(EditorStates.get(1)).toMatchObject({ lines: ['one'], tokenizedLines: [['one', 'Token Text']], uid: 1 })
+  expect(EditorStates.get(1)).toMatchObject({ content: 'one', lines: ['one'], tokenizedLines: [['one', 'Token Text']], uid: 1 })
   expect(EditorStates.get(2)).toMatchObject({ lines: [], uid: 2 })
 
   expect(EditorStates.getRendered(1)).toBeUndefined()
   EditorStates.setRendered(EditorStates.get(1))
   expect(EditorStates.getRendered(1)).toMatchObject({
+    content: 'one',
     languageId: 'plaintext',
     lines: ['one'],
     tokenizedLines: [['one', 'Token Text']],

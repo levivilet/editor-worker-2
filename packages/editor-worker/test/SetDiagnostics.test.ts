@@ -30,7 +30,7 @@ test.each([0, 1, 2, 10, 100, 1000])('sets and renders %i diagnostics', (count) =
   const { diagnostics: actualDiagnostics } = state
   expect(actualDiagnostics).toBe(diagnostics)
 
-  const diagnosticDom = getEditorVirtualDom(state).slice(1)
+  const diagnosticDom = getEditorVirtualDom(state).slice(4)
   const expectedDiagnosticDom =
     count === 0
       ? []
