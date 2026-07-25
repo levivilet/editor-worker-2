@@ -8,9 +8,21 @@ import * as TextDocumentWorker from '../TextDocumentWorker/TextDocumentWorker.ts
 export const loadContent = async (uid: number): Promise<void> => {
   await EditorCommandQueue.enqueue(uid, async () => {
     const { uri, useCache } = EditorStates.get(uid)
-    const content = await GetFileContent.getFileContent(uri, useCache)
-    const rpc = await TextDocumentWorker.get()
-    const snapshot = (await rpc.invoke('TextDocument.setContent', uid, content)) as TextDocumentSnapshot
-    await ApplyTextDocumentSnapshot.applyTextDocumentSnapshot(uid, snapshot)
+    try {
+      const content = await GetFileContent.getFileContent(uri, useCache)
+      const rpc = await TextDocumentWorker.get()
+      const snapshot = (await rpc.invoke('TextDocument.setContent', uid, content)) as TextDocumentSnapshot
+      EditorStates.set({
+        ...EditorStates.get(uid),
+        errorMessage: '',
+      })
+      await ApplyTextDocumentSnapshot.applyTextDocumentSnapshot(uid, snapshot)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      EditorStates.set({
+        ...EditorStates.get(uid),
+        errorMessage: `Could not load ${uri}: ${message}`,
+      })
+    }
   })
 }

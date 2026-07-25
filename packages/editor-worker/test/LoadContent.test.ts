@@ -38,6 +38,7 @@ test('loads file content into editor lines', async () => {
     canUndo: false,
     columnWidth: 9,
     diagnostics: [],
+    errorMessage: '',
     findWidgetVisible: false,
     height: 0,
     languageId: 'typescript',

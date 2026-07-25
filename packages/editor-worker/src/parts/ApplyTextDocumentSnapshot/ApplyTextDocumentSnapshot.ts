@@ -22,9 +22,34 @@ const getVisibleRange = (
   }
 }
 
-export const applyTextDocumentSnapshot = async (uid: number, snapshot: TextDocumentSnapshot): Promise<void> => {
+const revealSelection = (
+  state: Readonly<{ columnWidth: number; height: number; rowHeight: number; scrollLeft: number; scrollTop: number; width: number }>,
+  selections: readonly number[],
+): { readonly scrollLeft: number; readonly scrollTop: number } => {
+  const { columnWidth, height, rowHeight, scrollLeft: initialScrollLeft, scrollTop: initialScrollTop, width } = state
+  const activeRowIndex = selections[2] ?? 0
+  const activeColumnIndex = selections[3] ?? 0
+  const cursorTop = activeRowIndex * rowHeight
+  const cursorLeft = activeColumnIndex * columnWidth
+  let scrollTop = initialScrollTop
+  let scrollLeft = initialScrollLeft
+  if (cursorTop < scrollTop) {
+    scrollTop = cursorTop
+  } else if (height > 0 && cursorTop + rowHeight > scrollTop + height) {
+    scrollTop = cursorTop + rowHeight - height
+  }
+  if (cursorLeft < scrollLeft) {
+    scrollLeft = cursorLeft
+  } else if (width > 0 && cursorLeft + columnWidth > scrollLeft + width) {
+    scrollLeft = cursorLeft + columnWidth - width
+  }
+  return { scrollLeft, scrollTop }
+}
+
+export const applyTextDocumentSnapshot = async (uid: number, snapshot: TextDocumentSnapshot, revealCursor = true): Promise<void> => {
   const state = EditorStates.get(uid)
-  const { columnWidth, height, languageId, rowHeight, scrollTop, tokenizePath, width } = state
+  const { columnWidth, height, languageId, rowHeight, tokenizePath, width } = state
+  const { scrollLeft, scrollTop } = revealCursor ? revealSelection(state, snapshot.selections) : state
   const { maxLineY, minLineY } = getVisibleRange(snapshot.lineCount, height, rowHeight, scrollTop)
   const rpc = await TextDocumentWorker.get()
   const lines = (await rpc.invoke('TextDocument.getLines', uid, minLineY, maxLineY)) as readonly string[]
@@ -43,6 +68,8 @@ export const applyTextDocumentSnapshot = async (uid: number, snapshot: TextDocum
     minLineY,
     modified: snapshot.modified,
     scrollBarWidth,
+    scrollLeft,
+    scrollTop,
     selections: new Uint32Array(snapshot.selections),
     tokenizedLines,
     version: snapshot.version,

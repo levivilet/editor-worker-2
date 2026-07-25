@@ -7,23 +7,23 @@ const lineNumberNode: VirtualDomNode = {
   type: VirtualDomElements.Span,
 }
 
-const getLineNumberVirtualDom = (_line: string, index: number): readonly VirtualDomNode[] => {
+const getLineNumberVirtualDom = (_line: string, index: number, minLineY: number): readonly VirtualDomNode[] => {
   return [
     lineNumberNode,
     {
-      text: index + 1,
+      text: minLineY + index + 1,
       type: VirtualDomElements.Text,
     },
   ]
 }
 
-export const getLineNumbersVirtualDom = (lines: readonly string[]): readonly VirtualDomNode[] => {
+export const getLineNumbersVirtualDom = (lines: readonly string[], minLineY = 0): readonly VirtualDomNode[] => {
   return [
     {
       childCount: lines.length,
       className: ClassNames.Gutter,
       type: VirtualDomElements.Div,
     },
-    ...lines.flatMap(getLineNumberVirtualDom),
+    ...lines.flatMap((line, index) => getLineNumberVirtualDom(line, index, minLineY)),
   ]
 }

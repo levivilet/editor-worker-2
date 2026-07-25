@@ -39,5 +39,10 @@ test('renders dynamic cursor positions for each selection', () => {
 }
 [class~="EditorCursor-0.5-1"] {
   translate: 27px 0px;
+}
+[class~="EditorSelection-0.5-1-0"] {
+  height: 20px;
+  translate: 18px 0px;
+  width: 9px;
 }`)
 })

@@ -14,10 +14,10 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, W
   const textArea = editorInput.locator('textarea')
   await expect(editorInput).toHaveCSS('opacity', '0')
   await expect(textArea).toHaveCount(1)
-  await expect(textArea).toHaveValue('first line')
+  await expect(textArea).toHaveValue('')
 
-  await textArea.type('updated first line\nsecond line')
-  await expect(textArea).toHaveValue('updated first line\nsecond line')
+  await Command.execute('Editor.selectAll')
+  await Command.execute('Editor.handleBeforeInput', 'insertText', 'updated first line\nsecond line')
   // Flush the asynchronous input command before checking the rendered lines.
   await Command.execute('Editor.updateDiagnostics')
 

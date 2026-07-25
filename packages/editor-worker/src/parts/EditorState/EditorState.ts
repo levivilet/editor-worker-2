@@ -5,6 +5,7 @@ export interface EditorState {
   readonly canUndo: boolean
   readonly columnWidth: number
   readonly diagnostics: readonly Diagnostic[]
+  readonly errorMessage?: string
   readonly findWidgetVisible: boolean
   readonly height: number
   readonly languageId: string
@@ -15,6 +16,8 @@ export interface EditorState {
   readonly maxLineY: number
   readonly minLineY: number
   readonly modified: boolean
+  readonly pointerAnchor?: readonly [number, number]
+  readonly pointerSelecting?: boolean
   readonly rowHeight: number
   readonly scrollBarWidth: number
   readonly scrollLeft: number
