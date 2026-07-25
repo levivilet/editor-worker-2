@@ -1,2 +1,6 @@
+export const Diagnostic = 'Diagnostic'
+export const DiagnosticError = 'DiagnosticError'
+export const DiagnosticWarning = 'DiagnosticWarning'
 export const EditorLine = 'EditorLine'
 export const EditorLines = 'EditorLines'
+export const LayerDiagnostics = 'LayerDiagnostics'
