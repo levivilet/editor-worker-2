@@ -1,4 +1,5 @@
 import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
+import type { FindWidgetHandle } from '../FindWidgetHandle/FindWidgetHandle.ts'
 
 export interface EditorState {
   readonly canRedo: boolean
@@ -6,6 +7,9 @@ export interface EditorState {
   readonly columnWidth: number
   readonly diagnostics: readonly Diagnostic[]
   readonly errorMessage?: string
+  readonly findWidget?: FindWidgetHandle
+  readonly findWidgetInstanceSequence?: number
+  readonly findWidgetIntentSequence?: number
   readonly findWidgetVisible: boolean
   readonly height: number
   readonly languageId: string
