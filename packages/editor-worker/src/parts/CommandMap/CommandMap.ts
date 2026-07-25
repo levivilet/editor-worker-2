@@ -3,6 +3,7 @@ import * as Diff2 from '../Diff2/Diff2.ts'
 import * as Dispose from '../Dispose/Dispose.ts'
 import * as LoadContent from '../LoadContent/LoadContent.ts'
 import * as Render2 from '../Render2/Render2.ts'
+import * as SetDiagnostics from '../SetDiagnostics/SetDiagnostics.ts'
 
 const emptyArray = (): readonly never[] => []
 
@@ -21,6 +22,7 @@ export const commandMap = {
   'Editor.loadContent': LoadContent.loadContent,
   'Editor.render2': Render2.render2,
   'Editor.renderEventListeners': emptyArray,
+  'Editor.setDiagnostics': SetDiagnostics.setDiagnostics,
   'Editor.setSelections2': noop,
   'Editor.updateDiagnostics': noop,
   'Font.ensure': noop,
