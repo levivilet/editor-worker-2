@@ -5,7 +5,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
   return [
     {
       name: DomEventListenerFunctions.HandleClick,
-      params: ['handleClick', 'event.clientX', 'event.clientY'],
+      params: ['handleClick', 'event.clientX', 'event.clientY', 'event.detail'],
     },
     {
       name: DomEventListenerFunctions.HandleInput,
