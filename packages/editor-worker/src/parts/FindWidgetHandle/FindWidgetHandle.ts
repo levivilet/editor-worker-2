@@ -1,4 +1,4 @@
-export type FindWidgetStatus = 'opening' | 'visible'
+type FindWidgetStatus = 'opening' | 'visible'
 
 export interface FindWidgetHandle {
   readonly instanceId: string
