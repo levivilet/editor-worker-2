@@ -1,0 +1,20 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {
+      "project": ["*.js"]
+    },
+    "packages/build": {
+      "entry": ["src/build.ts", "src/computeNodeModulesCacheKey.ts", "src/watch.ts"],
+      "project": ["src/**/*.ts"]
+    },
+    "packages/editor-worker": {
+      "entry": ["src/editorWorkerMain.ts", "test/**/*.test.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
+    "packages/text-document-worker": {
+      "entry": ["src/textDocumentWorkerMain.ts", "test/**/*.test.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    }
+  }
+}

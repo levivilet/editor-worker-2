@@ -1,0 +1,50 @@
+{
+  "name": "@lvce-editor/editor-worker",
+  "version": "0.0.0-dev",
+  "private": true,
+  "description": "Experimental Editor Worker",
+  "keywords": [
+    "editor-worker"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levivilet/editor-worker-2.git"
+  },
+  "license": "MIT",
+  "author": "Lvce Editor",
+  "type": "module",
+  "main": "src/editorWorkerMain.ts",
+  "scripts": {
+    "test": "node --unhandled-rejections=warn --experimental-vm-modules ../../node_modules/jest/bin/jest.js --detectOpenHandles --forceExit",
+    "test:watch": "node --unhandled-rejections=warn --experimental-vm-modules ../../node_modules/jest/bin/jest.js --watch"
+  },
+  "jest": {
+    "injectGlobals": false,
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "transform": {
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "useESM": true
+        }
+      ]
+    },
+    "testMatch": [
+      "**/test/**"
+    ],
+    "collectCoverage": false
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.4.1",
+    "@lvce-editor/rpc": "^6.10.0",
+    "@lvce-editor/virtual-dom-worker": "^11.8.1",
+    "@types/node": "^24.10.1",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.12"
+  }
+}

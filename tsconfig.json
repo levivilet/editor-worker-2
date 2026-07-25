@@ -1,0 +1,15 @@
+{
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./packages/editor-worker"
+    },
+    {
+      "path": "./packages/build"
+    },
+    {
+      "path": "./packages/text-document-worker"
+    }
+  ]
+}
