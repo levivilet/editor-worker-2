@@ -1,4 +1,5 @@
 import { expect, test } from '@jest/globals'
+import { KeyCode, WhenExpression } from '@lvce-editor/virtual-dom-worker'
 import { commandMap } from '../src/parts/CommandMap/CommandMap.ts'
 
 test('contains only the minimal editor integration commands', () => {
@@ -32,7 +33,13 @@ test('contains only the minimal editor integration commands', () => {
     'handleInput',
     'updateDiagnostics',
   ])
-  expect(commandMap['Editor.getKeyBindings']()).toEqual([])
+  expect(commandMap['Editor.getKeyBindings']()).toEqual([
+    {
+      command: 'Editor.deleteCharacterLeft',
+      key: KeyCode.Backspace,
+      when: WhenExpression.FocusEditorText,
+    },
+  ])
   expect(commandMap['Editor.getQuickPickMenuEntries']()).toEqual([])
   expect(commandMap['Editor.handleInput']).toEqual(expect.any(Function))
   expect(commandMap['Editor.loadContent']).toEqual(expect.any(Function))
