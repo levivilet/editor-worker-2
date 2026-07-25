@@ -1,21 +1,14 @@
-import { LazyTransferMessagePortRpcParent, WebWorkerRpcClient } from '@lvce-editor/rpc'
-import { ClipBoardWorker, ExtensionManagementWorker, FileSystemWorker, RendererWorker, RpcId } from '@lvce-editor/rpc-registry'
-import * as CommandMap from '../CommandMap/CommandMap.ts'
+import { ClipBoardWorker, ExtensionManagementWorker, FileSystemWorker, RendererWorker } from '@lvce-editor/rpc-registry'
+import { createClipBoardWorkerRpc } from '../CreateClipBoardWorkerRpc/CreateClipBoardWorkerRpc.ts'
+import { createExtensionManagementWorkerRpc } from '../CreateExtensionManagementWorkerRpc/CreateExtensionManagementWorkerRpc.ts'
+import { createFileSystemWorkerRpc } from '../CreateFileSystemWorkerRpc/CreateFileSystemWorkerRpc.ts'
+import { createRendererWorkerRpc } from '../CreateRendererWorkerRpc/CreateRendererWorkerRpc.ts'
 
 export const initializeWorkerConnections = async (): Promise<void> => {
   const [fileSystemRpc, extensionManagementRpc, clipBoardRpc] = await Promise.all([
-    LazyTransferMessagePortRpcParent.create({
-      commandMap: {},
-      send: (port) => RendererWorker.sendMessagePortToFileSystemWorker(port, RpcId.EditorWorker),
-    }),
-    LazyTransferMessagePortRpcParent.create({
-      commandMap: {},
-      send: (port) => RendererWorker.sendMessagePortToExtensionManagementWorker(port, RpcId.EditorWorker),
-    }),
-    LazyTransferMessagePortRpcParent.create({
-      commandMap: {},
-      send: (port) => RendererWorker.sendMessagePortToClipBoardWorker(port, RpcId.EditorWorker),
-    }),
+    createFileSystemWorkerRpc(),
+    createExtensionManagementWorkerRpc(),
+    createClipBoardWorkerRpc(),
   ])
 
   FileSystemWorker.set(fileSystemRpc)
@@ -24,9 +17,7 @@ export const initializeWorkerConnections = async (): Promise<void> => {
 }
 
 export const listen = async (): Promise<void> => {
-  const rendererRpc = await WebWorkerRpcClient.create({
-    commandMap: CommandMap.commandMap,
-  })
+  const rendererRpc = await createRendererWorkerRpc()
   RendererWorker.set(rendererRpc)
   await initializeWorkerConnections()
 }
