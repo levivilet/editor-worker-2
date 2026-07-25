@@ -10,7 +10,12 @@ export const diff2 = (uid: number): readonly number[] => {
   if (oldState.selections !== newState.selections) {
     return [DiffType.RenderIncremental]
   }
-  if (oldState.diagnostics === newState.diagnostics && oldState.lines === newState.lines && oldState.lineNumbers === newState.lineNumbers) {
+  if (
+    oldState.diagnostics === newState.diagnostics &&
+    oldState.findWidgetVisible === newState.findWidgetVisible &&
+    oldState.lines === newState.lines &&
+    oldState.lineNumbers === newState.lineNumbers
+  ) {
     return []
   }
   return [DiffType.RenderIncremental]

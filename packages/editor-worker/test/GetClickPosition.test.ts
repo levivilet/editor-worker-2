@@ -5,6 +5,7 @@ import { getClickPosition } from '../src/parts/GetClickPosition/GetClickPosition
 const createState = (): EditorState => ({
   columnWidth: 9,
   diagnostics: [],
+  findWidgetVisible: false,
   height: 200,
   languageId: 'plaintext',
   lineCount: 3,

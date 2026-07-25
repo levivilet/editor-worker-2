@@ -7,6 +7,7 @@ test('renders the cursor in its own div at the selected position', () => {
   const state: EditorState = {
     columnWidth: 9,
     diagnostics: [],
+    findWidgetVisible: false,
     height: 200,
     languageId: 'plaintext',
     lineCount: 2,

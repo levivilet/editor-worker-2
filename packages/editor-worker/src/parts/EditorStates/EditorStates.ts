@@ -8,6 +8,7 @@ export const create = (uid: number, uri = '', languageId = 'plaintext', tokenize
   const state: EditorState = {
     columnWidth: EditorMetrics.ColumnWidth,
     diagnostics: [],
+    findWidgetVisible: false,
     height,
     languageId,
     lineCount: 0,

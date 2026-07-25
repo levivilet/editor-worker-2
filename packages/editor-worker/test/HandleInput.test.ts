@@ -24,6 +24,7 @@ test('updates the text document and visible editor lines', async () => {
   expect(EditorStates.get(1)).toEqual({
     columnWidth: 9,
     diagnostics: [],
+    findWidgetVisible: false,
     height: 0,
     languageId: 'plaintext',
     lineCount: 3,
