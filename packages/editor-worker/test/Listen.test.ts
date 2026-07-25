@@ -8,6 +8,7 @@ import {
   RendererWorker,
   RpcId,
   SyntaxHighlightingWorker,
+  TextMeasurementWorker,
 } from '@lvce-editor/rpc-registry'
 import * as Listen from '../src/parts/Listen/Listen.ts'
 
@@ -24,6 +25,7 @@ test('initializes lazy worker connections', async () => {
     'SendMessagePortToExtensionHostWorker.sendMessagePortToClipBoardWorker'() {},
     'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionManagementWorker'() {},
     'SendMessagePortToExtensionHostWorker.sendMessagePortToFileSystemWorker'() {},
+    'SendMessagePortToExtensionHostWorker.sendMessagePortToTextMeasurementWorker'() {},
     'SendMessagePortToSyntaxHighlightingWorker.sendMessagePortToSyntaxHighlightingWorker'() {},
   })
 
@@ -34,10 +36,12 @@ test('initializes lazy worker connections', async () => {
   const extensionManagementRpc = get(RpcId.ExtensionManagementWorker)
   const fileSystemRpc = get(RpcId.FileSystemWorker)
   const syntaxHighlightingRpc = get(RpcId.MarkdownWorker)
+  const textMeasurementRpc = get(RpcId.IconThemeWorker)
   fileSystemRpc.send('test')
   extensionManagementRpc.send('test')
   clipBoardRpc.send('test')
   syntaxHighlightingRpc.send('test')
+  textMeasurementRpc.send('test')
   await new Promise((resolve) => setTimeout(resolve, 0))
 
   expect(mockRendererRpc.invocations).toEqual([
@@ -54,7 +58,14 @@ test('initializes lazy worker connections', async () => {
       expect.anything(),
       'HandleMessagePort.handleMessagePort2',
     ],
+    ['SendMessagePortToExtensionHostWorker.sendMessagePortToTextMeasurementWorker', expect.anything(), 'TextMeasurement.handleMessagePort', 0],
   ])
 
-  await Promise.all([ClipBoardWorker.dispose(), ExtensionManagementWorker.dispose(), FileSystemWorker.dispose(), SyntaxHighlightingWorker.dispose()])
+  await Promise.all([
+    ClipBoardWorker.dispose(),
+    ExtensionManagementWorker.dispose(),
+    FileSystemWorker.dispose(),
+    SyntaxHighlightingWorker.dispose(),
+    TextMeasurementWorker.dispose(),
+  ])
 })
